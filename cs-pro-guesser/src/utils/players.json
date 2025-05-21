@@ -1,0 +1,35 @@
+[
+  {
+    "id": "1",
+    "name": "ZywOo",
+    "headshot": "/public/zywoo.png",
+    "images": [
+      "/player-images/zywoo1.png",
+      "/player-images/zywoo2.png",
+      "/player-images/zywoo3.png"
+    ],
+    "quote": "I just try to do my best and help my team win."
+  },
+  {
+    "id": "2",
+    "name": "s1mple",
+    "headshot": "/public/s1mple.png",
+    "images": [
+      "/player-images/s1mple1.png",
+      "/player-images/s1mple2.png",
+      "/player-images/s1mple3.png"
+    ],
+    "quote": "Just give me the AWP and let me work."
+  },
+  {
+    "id": "3",
+    "name": "NiKo",
+    "headshot": "/public/obi.jpg",
+    "images": [
+      "/player-images/niko1.png",
+      "/player-images/niko2.png",
+      "/player-images/niko3.png"
+    ],
+    "quote": "When I play my game, I can beat anyone."
+  }
+]

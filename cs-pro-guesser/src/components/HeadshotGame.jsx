@@ -1,14 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
 import ImageReveal from './ImageReveal';
+import playerData from '../utils/players.json'; // Import the player data
 
-export default function HeadshotGame({ onBackToHome, src }) {
+export default function HeadshotGame({ onBackToHome }) {
   const [gameStarted, setGameStarted] = useState(false);
   const [answer, setAnswer] = useState('');
   const [hasGuessed, setHasGuessed] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [score, setScore] = useState(100);
   const [wrongAttempts, setWrongAttempts] = useState(0);
+  const [currentPlayer, setCurrentPlayer] = useState(null);
   const timerRef = useRef(null);
+  
   
   // Constants for scoring
   const totalGameTime = 37500; // 37.5 seconds in milliseconds
@@ -16,12 +19,20 @@ export default function HeadshotGame({ onBackToHome, src }) {
   const pointsDeduction = totalPointsToLose / (totalGameTime / 1500); // Points to deduct per reveal
   const wrongAnswerPenalty = 10; // Points to deduct per wrong answer
   
-  // In a real implementation, this would be passed as a prop or fetched from an API
-  const correctAnswer = "ZywOo";
+  // Select a random player when the game starts
+  useEffect(() => {
+    if (gameStarted && !currentPlayer) {
+      const randomIndex = Math.floor(Math.random() * playerData.length);
+      const player = playerData[randomIndex];
+      console.log("Selected player:", player.name);
+      console.log("Headshot image path:", player.headshot);
+      setCurrentPlayer(player);
+    }
+  }, [gameStarted, currentPlayer]);
   
   // Timer effect to reduce score as time passes
   useEffect(() => {
-    if (gameStarted && !hasGuessed) {
+    if (gameStarted && currentPlayer && !hasGuessed) {
       // Clear any existing timer
       if (timerRef.current) clearInterval(timerRef.current);
       
@@ -40,13 +51,15 @@ export default function HeadshotGame({ onBackToHome, src }) {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [gameStarted, hasGuessed]);
+  }, [gameStarted, currentPlayer, hasGuessed]);
   
   const handleSubmitGuess = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
+    
+    if (!currentPlayer) return;
     
     // Simple case-insensitive comparison
-    if (answer.toLowerCase() === correctAnswer.toLowerCase()) {
+    if (answer.toLowerCase() === currentPlayer.name.toLowerCase()) {
       // Stop the timer and end the game on correct answer
       clearInterval(timerRef.current);
       setHasGuessed(true);
@@ -71,6 +84,7 @@ export default function HeadshotGame({ onBackToHome, src }) {
     setIsCorrect(false);
     setScore(100);
     setWrongAttempts(0);
+    setCurrentPlayer(null);
     if (timerRef.current) clearInterval(timerRef.current);
   };
 
@@ -121,14 +135,16 @@ export default function HeadshotGame({ onBackToHome, src }) {
             )}
           </div>
           
-          <ImageReveal 
-            src={src} 
-            totalBlocks={25} 
-            interval={1500} 
-          />
+          {currentPlayer && (
+            <ImageReveal 
+              src={currentPlayer.headshot}
+              totalBlocks={25} 
+              interval={1500} 
+            />
+          )}
           
-          {/* Guess form */}
-          <form onSubmit={handleSubmitGuess} className="w-full mt-6">
+          {/* Guess input */}
+          <div className="w-full mt-6">
             <div className="flex gap-2">
               <input
                 type="text"
@@ -136,29 +152,37 @@ export default function HeadshotGame({ onBackToHome, src }) {
                 onChange={(e) => setAnswer(e.target.value)}
                 placeholder="Enter player name..."
                 className="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded text-white"
-                disabled={hasGuessed}
+                disabled={hasGuessed || !currentPlayer}
+                onKeyUp={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSubmitGuess();
+                  }
+                }}
               />
               <button
-                type="submit"
+                onClick={handleSubmitGuess}
                 className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded font-bold"
-                disabled={hasGuessed || !answer.trim()}
+                disabled={hasGuessed || !answer.trim() || !currentPlayer}
               >
                 Submit
               </button>
             </div>
-          </form>
+          </div>
           
           {/* Results section */}
-          {hasGuessed && (
+          {hasGuessed && currentPlayer && (
             <div className={`mt-4 p-4 w-full rounded ${isCorrect ? 'bg-green-900' : 'bg-red-900'}`}>
               <h3 className="text-xl font-bold">
                 {isCorrect ? 'Correct!' : 'Time\'s up!'}
               </h3>
               <p className="mt-2">
                 {isCorrect 
-                  ? `Great job! You correctly identified ${correctAnswer} with a score of ${Math.round(score)}.` 
-                  : `The correct answer was ${correctAnswer}. Your final score: ${Math.round(score)}.`}
+                  ? `Great job! You correctly identified ${currentPlayer.name} with a score of ${Math.round(score)}.` 
+                  : `The correct answer was ${currentPlayer.name}. Your final score: ${Math.round(score)}.`}
               </p>
+              {currentPlayer.quote && (
+                <p className="mt-2 italic text-sm">"{currentPlayer.quote}"</p>
+              )}
               <button
                 onClick={handleRestartGame}
                 className="mt-3 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded"

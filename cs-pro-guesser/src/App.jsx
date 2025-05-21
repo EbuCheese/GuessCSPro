@@ -2,7 +2,6 @@ import { useState } from 'react';
 import './main.css';
 import HomePage from './components/HomePage';
 import HeadshotGame from './components/HeadshotGame';
-import zywoo from './assets/zywoo.png';
 
 function App() {
   const [mode, setMode] = useState(null);
@@ -22,7 +21,6 @@ function App() {
       {mode === 'headshot' && (
         <HeadshotGame 
           onBackToHome={handleBackToHome}
-          src={zywoo}
         />
       )}
       
