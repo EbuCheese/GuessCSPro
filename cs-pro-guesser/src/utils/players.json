@@ -2,7 +2,7 @@
   {
     "id": "1",
     "name": "ZywOo",
-    "headshot": "/public/zywoo.png",
+    "headshot": "/zywoo.png",
     "images": [
       "/player-images/zywoo1.png",
       "/player-images/zywoo2.png",
@@ -13,7 +13,7 @@
   {
     "id": "2",
     "name": "s1mple",
-    "headshot": "/public/s1mple.png",
+    "headshot": "/s1mple.png",
     "images": [
       "/player-images/s1mple1.png",
       "/player-images/s1mple2.png",
@@ -24,7 +24,95 @@
   {
     "id": "3",
     "name": "NiKo",
-    "headshot": "/public/obi.jpg",
+    "headshot": "/niko.png",
+    "images": [
+      "/player-images/niko1.png",
+      "/player-images/niko2.png",
+      "/player-images/niko3.png"
+    ],
+    "quote": "When I play my game, I can beat anyone."
+  },
+  {
+    "id": "4",
+    "name": "910",
+    "headshot": "/910.png",
+    "images": [
+      "/player-images/niko1.png",
+      "/player-images/niko2.png",
+      "/player-images/niko3.png"
+    ],
+    "quote": "When I play my game, I can beat anyone."
+  },
+  {
+    "id": "5",
+    "name": "device",
+    "headshot": "/device.png",
+    "images": [
+      "/player-images/niko1.png",
+      "/player-images/niko2.png",
+      "/player-images/niko3.png"
+    ],
+    "quote": "When I play my game, I can beat anyone."
+  },
+  {
+    "id": "6",
+    "name": "dupreeh",
+    "headshot": "/dupreeh.png",
+    "images": [
+      "/player-images/niko1.png",
+      "/player-images/niko2.png",
+      "/player-images/niko3.png"
+    ],
+    "quote": "When I play my game, I can beat anyone."
+  },
+  {
+    "id": "7",
+    "name": "elige",
+    "headshot": "/elige.png",
+    "images": [
+      "/player-images/niko1.png",
+      "/player-images/niko2.png",
+      "/player-images/niko3.png"
+    ],
+    "quote": "When I play my game, I can beat anyone."
+  },
+  {
+    "id": "8",
+    "name": "fallen",
+    "headshot": "/fallen.png",
+    "images": [
+      "/player-images/niko1.png",
+      "/player-images/niko2.png",
+      "/player-images/niko3.png"
+    ],
+    "quote": "When I play my game, I can beat anyone."
+  },
+  {
+    "id": "9",
+    "name": "flamez",
+    "headshot": "/flamez.png",
+    "images": [
+      "/player-images/niko1.png",
+      "/player-images/niko2.png",
+      "/player-images/niko3.png"
+    ],
+    "quote": "When I play my game, I can beat anyone."
+  },
+  {
+    "id": "10",
+    "name": "grim",
+    "headshot": "/grim.png",
+    "images": [
+      "/player-images/niko1.png",
+      "/player-images/niko2.png",
+      "/player-images/niko3.png"
+    ],
+    "quote": "When I play my game, I can beat anyone."
+  },
+  {
+    "id": "11",
+    "name": "fame",
+    "headshot": "/fame.png",
     "images": [
       "/player-images/niko1.png",
       "/player-images/niko2.png",
