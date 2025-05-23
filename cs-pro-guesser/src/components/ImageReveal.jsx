@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 export default function ImageReveal({
   src = "/api/placeholder/400/400",
   revealSteps = 25,
-  interval = 1500,
+  interval = 1200,
   onImageLoaded
 }) {
   // State to track which blocks have been revealed
