@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import ImageReveal from './ImageReveal';
-import playerData from '../utils/players.json'; // Import the player data
 
 export default function HeadshotGame({ onBackToHome }) {
   const [gameStarted, setGameStarted] = useState(false);
@@ -13,11 +12,13 @@ export default function HeadshotGame({ onBackToHome }) {
   const [gameComplete, setGameComplete] = useState(false);
   const [showRoundSummary, setShowRoundSummary] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Mult-rounds
+  // Multi-rounds
   const [currentRound, setCurrentRound] = useState(1);
   const [totalScore, setTotalScore] = useState(0);
-  const [usedPlayerIds, setUsedPlayerIds] = useState(new Set());
+  const [usedPlayerIds, setUsedPlayerIds] = useState([]);
   const [roundResults, setRoundResults] = useState([]);
 
   const timerRef = useRef(null);
@@ -33,7 +34,7 @@ export default function HeadshotGame({ onBackToHome }) {
   const timeDecayRate = 2; // Points lost per second
   const wrongAnswerPenalty = 15; // Increased penalty for wrong answers
   const minScore = 10; // Minimum score per round
-  
+
   // Helper function to normalize names for comparison
   const normalizeNameForComparison = (name) => {
     return name.toLowerCase()
@@ -45,7 +46,6 @@ export default function HeadshotGame({ onBackToHome }) {
       .replace(/7/g, 't')  // Replace 7 with t
       .trim();
   };
-
 
   // Enhanced answer checking function
   const checkAnswer = (userAnswer, correctName) => {
@@ -72,7 +72,6 @@ export default function HeadshotGame({ onBackToHome }) {
     return false;
   };
 
-
   // Handle Enter key for next round button
   useEffect(() => {
     const handleKeyPress = (e) => {
@@ -94,7 +93,6 @@ export default function HeadshotGame({ onBackToHome }) {
     };
   }, [showRoundSummary]);
 
-
   // Focus input whenever it should be active - simplified dependencies
   useEffect(() => {
     const shouldFocus = gameStarted && !hasGuessed && !showRoundSummary && !gameComplete;
@@ -111,10 +109,10 @@ export default function HeadshotGame({ onBackToHome }) {
 
   // Additional focus trigger for wrong answers and round starts
   useEffect(() => {
-    if (gameStarted && !hasGuessed && !showRoundSummary && !gameComplete && imageLoaded && inputRef.current) {
+    if (gameStarted && !hasGuessed && !showRoundSummary && !gameComplete && imageLoaded && inputRef.current && !loading) {
       inputRef.current.focus();
     }
-  }, [currentRound, wrongAttempts, imageLoaded]);
+  }, [currentRound, wrongAttempts, imageLoaded, loading]);
   
   // Select a random unused player when a new round starts
   useEffect(() => {
@@ -130,31 +128,40 @@ export default function HeadshotGame({ onBackToHome }) {
     }
   }, [currentPlayer]);
 
-  const selectRandomPlayer = () => {
-    const availablePlayers = playerData.filter((_, index) => !usedPlayerIds.has(index));
+  const selectRandomPlayer = async () => {
+    setLoading(true);
+    setError(null);
     
-    if (availablePlayers.length === 0) {
-      // If we've used all players, reset the used set (shouldn't happen with 10 rounds)
-      setUsedPlayerIds(new Set());
-      const randomIndex = Math.floor(Math.random() * playerData.length);
-      const player = playerData[randomIndex];
-      setCurrentPlayer(player);
-      setUsedPlayerIds(new Set([randomIndex]));
-    } else {
-      const randomIndex = Math.floor(Math.random() * availablePlayers.length);
-      const selectedPlayer = availablePlayers[randomIndex];
-      const originalIndex = playerData.findIndex(p => p === selectedPlayer);
+    try {
+      // Send used player IDs to backend to get a unique player
+      const response = await fetch('http://localhost:3000/api/headshotRound', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ usedPlayerIds })
+      });
       
-      setCurrentPlayer(selectedPlayer);
-      setUsedPlayerIds(prev => new Set([...prev, originalIndex]));
+      if (!response.ok) throw new Error('Failed to fetch player');
+      
+      const playerData = await response.json();
+      
+      // Add this player ID to the used list
+      setUsedPlayerIds(prev => [...prev, playerData.id]);
+      setCurrentPlayer(playerData);
+      
+      console.log(`Round ${currentRound} - Selected player ID:`, playerData.id);
+    } catch (err) {
+      console.error('Error selecting player:', err);
+      setError('Failed to load player. Please try again.');
+    } finally {
+      setLoading(false);
     }
-    
-    console.log(`Round ${currentRound} - Selected player:`, currentPlayer?.name);
   };
 
   // Timer effect for round countdown and scoring
   useEffect(() => {
-    if (gameStarted && currentPlayer && !hasGuessed && !gameComplete && imageLoaded) {
+    if (gameStarted && currentPlayer && !hasGuessed && !gameComplete && imageLoaded && !loading) {
       // Reset round state
       setCurrentRoundScore(baseScore);
       setTimeLeft(30);
@@ -185,8 +192,7 @@ export default function HeadshotGame({ onBackToHome }) {
       if (timerRef.current) clearInterval(timerRef.current);
       if (gameTimerRef.current) clearInterval(gameTimerRef.current);
     };
-  }, [gameStarted, currentPlayer, hasGuessed, currentRound, imageLoaded]); 
-  
+  }, [gameStarted, currentPlayer, hasGuessed, currentRound, imageLoaded, loading]);
 
   const handleTimeUp = () => {
     if (gameTimerRef.current) clearInterval(gameTimerRef.current);
@@ -207,12 +213,12 @@ export default function HeadshotGame({ onBackToHome }) {
     setShowRoundSummary(true);
   };
 
-   const handleSubmitGuess = (e) => {
+  const handleSubmitGuess = (e) => {
     if (e) e.preventDefault();
     
-    if (!currentPlayer || hasGuessed) return;
+    if (!currentPlayer || hasGuessed || loading) return;
     
-    // Use enhanced answer checking
+    // Use enhanced answer checking with the player name from API
     if (checkAnswer(answer, currentPlayer.name)) {
       // Correct answer
       if (gameTimerRef.current) clearInterval(gameTimerRef.current);
@@ -288,11 +294,41 @@ export default function HeadshotGame({ onBackToHome }) {
     setShowRoundSummary(false);
     setCurrentRound(1);
     setTotalScore(0);
-    setUsedPlayerIds(new Set());
+    setUsedPlayerIds([]);
     setRoundResults([]);
     setTimeLeft(30);
     setImageLoaded(false);
+    setLoading(false);
+    setError(null);
   };
+
+  // Show error state
+  if (error && !gameStarted) {
+    return (
+      <div className="flex flex-col items-center justify-center w-full relative min-h-screen">
+        <button 
+          onClick={onBackToHome}
+          className="absolute top-4 left-4 text-gray-400 hover:text-white flex items-center z-10"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+          </svg>
+          Home
+        </button>
+        
+        <div className="flex flex-col items-center p-8 border border-red-700 rounded-lg bg-red-900 max-w-lg">
+          <h3 className="text-2xl mb-4 text-white">Error Loading Game</h3>
+          <p className="text-red-200 mb-6 text-center">{error}</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold text-lg rounded-lg transition-all"
+          >
+            Reload Page
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center justify-center w-full relative min-h-screen">
@@ -386,7 +422,7 @@ export default function HeadshotGame({ onBackToHome }) {
                 {isCorrect ? `+${currentRoundScore}` : '0'} pts
               </div>
               <div className="text-lg text-gray-300">
-                Player: <strong>{currentPlayer?.name}</strong>
+                Player: <strong>{currentPlayer.name}</strong>
               </div>
               {isCorrect && (
                 <div className="text-sm text-gray-400 mt-2">
@@ -421,8 +457,8 @@ export default function HeadshotGame({ onBackToHome }) {
             </div>
             <div className="text-center">
               <div className="text-sm text-gray-400">Time</div>
-              <div className={`text-2xl font-bold ${timeLeft <= 10 ? 'text-red-400' : imageLoaded ? 'text-white' : 'text-gray-500'}`}>
-                {imageLoaded ? `${timeLeft}s` : 'Loading...'}
+              <div className={`text-2xl font-bold ${timeLeft <= 10 ? 'text-red-400' : (imageLoaded && !loading) ? 'text-white' : 'text-gray-500'}`}>
+                {(imageLoaded && !loading) ? `${timeLeft}s` : 'Loading...'}
               </div>
             </div>
             <div className="text-center">
@@ -446,14 +482,29 @@ export default function HeadshotGame({ onBackToHome }) {
               <span className="font-bold text-red-400">{wrongAttempts}</span>
             </div>
           )}
+
+          {/* Loading state */}
+          {loading && (
+            <div className="mb-4 bg-gray-800 border border-gray-700 rounded px-4 py-2 flex items-center">
+              <div className="w-4 h-4 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin mr-2"></div>
+              <span className="text-gray-300">Loading player...</span>
+            </div>
+          )}
+
+          {/* Error state during game */}
+          {error && gameStarted && (
+            <div className="mb-4 bg-red-900 border border-red-600 rounded px-4 py-2">
+              <span className="text-red-200">{error}</span>
+            </div>
+          )}
           
           {currentPlayer && (
             <ImageReveal 
-              src={currentPlayer.headshot}
+              src={`http://localhost:3000/api/headshot?id=${currentPlayer.headshotId}`}
               totalBlocks={25} 
               interval={1200}
-              key={currentPlayer.name}
-              onImageLoaded={setImageLoaded} // Pass callback to handle image loading
+              key={currentPlayer.id}
+              onImageLoaded={setImageLoaded}
             />
           )}
           
@@ -465,16 +516,16 @@ export default function HeadshotGame({ onBackToHome }) {
                 type="text"
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
-                placeholder={imageLoaded ? "Enter player name..." : "Loading image..."}
+                placeholder={(imageLoaded && !loading) ? "Enter player name..." : "Loading..."}
                 className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white text-lg focus:border-blue-500 focus:outline-none"
-                disabled={hasGuessed || !currentPlayer || !imageLoaded}
+                disabled={hasGuessed || !currentPlayer || !imageLoaded || loading}
                 autoComplete="off"
                 autoFocus
               />
               <button
                 type="submit"
                 className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                disabled={hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded}
+                disabled={hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading}
               >
                 Submit
               </button>
