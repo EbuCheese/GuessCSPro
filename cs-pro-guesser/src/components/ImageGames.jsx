@@ -318,273 +318,526 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
     setError(null);
   };
 
-  // Show error state
-  if (error && !gameStarted) {
-    return (
-      <div className="flex flex-col items-center justify-center w-full relative min-h-screen">
-        <button 
-          onClick={onBackToHome}
-          className="absolute top-4 left-4 text-gray-400 hover:text-white flex items-center z-10"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
-          </svg>
-          Home
-        </button>
-        
-        <div className="flex flex-col items-center p-8 border border-red-700 rounded-lg bg-red-900 max-w-lg">
-          <h3 className="text-2xl mb-4 text-white">Error Loading Game</h3>
-          <p className="text-red-200 mb-6 text-center">{error}</p>
-          <button 
-            onClick={() => window.location.reload()}
-            className="px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold text-lg rounded-lg transition-all"
-          >
-            Reload Page
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex flex-col items-center justify-center w-full relative min-h-screen">
-      {/* Home button */}
+    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+      {/* CS2 Background */}
+      <div 
+        className="absolute inset-0 z-0"
+        style={{
+          background: `
+            radial-gradient(circle at 30% 70%, rgba(255, 107, 53, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 70% 30%, rgba(52, 152, 219, 0.05) 0%, transparent 50%),
+            linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 50%, #0a0e1a 100%)
+          `
+        }}
+      />
+
+      {/* Back Button */}
       <button 
         onClick={onBackToHome}
-        className="absolute top-4 left-4 text-gray-400 hover:text-white flex items-center z-10"
+        className="absolute top-6 left-6 flex items-center space-x-2 px-4 py-2 rounded-lg border border-gray-700 bg-gray-800/80 backdrop-blur-sm hover:border-orange-500 hover:bg-gray-700/80 transition-all duration-300 z-20 group"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 group-hover:text-orange-400 transition-colors" viewBox="0 0 20 20" fill="currentColor">
           <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
         </svg>
-        Home
+        <span 
+          className="text-gray-300 group-hover:text-white font-semibold transition-colors"
+          style={{ fontFamily: '"Rajdhani", sans-serif' }}
+        >
+          HOME
+        </span>
       </button>
-      
-      <h2 className="text-3xl text-yellow-400 mb-6 font-bold">PLAYER IDENTIFICATION</h2>
-      
-      {!gameStarted ? (
-        <div className="flex flex-col items-center space-y-6">
-          <div className="text-center mb-6">
-            <h3 className="text-2xl mb-4 text-white">Challenge</h3>
-            <div className="text-gray-300 mb-6 text-center space-y-2">
-              <p>🎯 <strong>10 rounds</strong> of CS pro identification</p>
-              <p>⏱️ <strong>30 seconds</strong> per round</p>
-              <p>💯 Start with <strong>100 points</strong> each round</p>
-              <p>⚡ <strong>Time bonus</strong> for quick answers</p>
-              <p>❌ <strong>-15 points</strong> for wrong guesses</p>
-            </div>
-          </div>
+
+      <div className="relative z-10 w-full max-w-6xl px-6 flex flex-col items-center justify-center min-h-screen">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h2 
+            className="text-5xl font-black mb-4 tracking-wider"
+            style={{
+              fontFamily: '"Rajdhani", sans-serif',
+              background: 'linear-gradient(45deg, #FF6B35, #F39C12)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              textShadow: '0 0 20px rgba(255, 107, 53, 0.3)',
+              filter: 'drop-shadow(0 0 8px rgba(255, 107, 53, 0.2))'
+            }}
+          >
+            PLAYER IDENTIFICATION
+          </h2>
           
-          <div className={`grid gap-6 w-full ${!initialGameMode ? 'grid-cols-1 md:grid-cols-2 max-w-4xl' : 'max-w-md'}`}>
-            {/* Headshot Mode */}
-            {(!initialGameMode || initialGameMode === 'headshot') && (
-            <div className="flex flex-col items-center p-8 border border-gray-700 rounded-lg bg-gray-800">
-              <div className="text-6xl mb-4">🎯</div>
-              <h4 className="text-xl font-bold mb-3 text-white">HEADSHOT MODE</h4>
-              <p className="text-gray-300 text-center mb-6">
-                Identify players from their close-up headshot photos. Perfect for testing your knowledge of pro player faces.
-              </p>
-              <button 
-                onClick={() => handleModeSelect('headshot')}
-                className="px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-bold text-lg rounded-lg transition-all transform hover:scale-105"
-              >
-                START HEADSHOT MODE
-              </button>
-            </div>
-            )}
-
-            {/* Free-for-All Mode */}
-            {(!initialGameMode || initialGameMode === 'free-for-all') && (
-            <div className="flex flex-col items-center p-8 border border-gray-700 rounded-lg bg-gray-800">
-              <div className="text-6xl mb-4">🎲</div>
-              <h4 className="text-xl font-bold mb-3 text-white">FREE-FOR-ALL MODE</h4>
-              <p className="text-gray-300 text-center mb-6">
-                Random images from tournaments, streams, and events. More challenging with varied angles and contexts.
-              </p>
-              <button 
-                onClick={() => handleModeSelect('free-for-all')}
-                className="px-8 py-4 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold text-lg rounded-lg transition-all transform hover:scale-105"
-              >
-                START FREE-FOR-ALL
-              </button>
-            </div>
-            )}
+          <div className="flex items-center justify-center space-x-4">
+            <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent w-32"></div>
+            <div className="text-orange-500 text-xl">⚡</div>
+            <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent w-32"></div>
           </div>
         </div>
 
-      ) : gameComplete ? (
-        <div className="flex flex-col items-center w-full max-w-4xl">
-          <div className="bg-gradient-to-r from-purple-900 to-blue-900 p-8 rounded-lg border border-gray-600 w-full">
-            <h3 className="text-3xl font-bold mb-6 text-center text-yellow-400">
-              🏆 CHALLENGE COMPLETE! 🏆
-            </h3>
-            <div className="text-center mb-6">
-              <div className="text-6xl font-bold text-white mb-2">{totalScore}</div>
-              <div className="text-xl text-gray-300">Total Score</div>
-              <div className="text-lg text-gray-400">
-                Average: {Math.round(totalScore / maxRounds)} points per round
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              {roundResults.map((result, index) => (
-                <div key={index} className="bg-gray-800 p-4 rounded border border-gray-700">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-bold text-yellow-400">Round {result.round}</span>
-                    <span className={`font-bold ${result.isCorrect ? 'text-green-400' : 'text-red-400'}`}>
-                      {result.score} pts
-                    </span>
+        {!gameStarted ? (
+          <div className="flex flex-col items-center space-y-8 w-full">
+            {/* Challenge Rules */}
+            <div 
+              className="p-8 rounded-lg border border-gray-700 max-w-2xl w-full mx-auto"
+              style={{
+                background: 'linear-gradient(135deg, rgba(26, 31, 46, 0.9) 0%, rgba(45, 55, 72, 0.7) 100%)',
+                backdropFilter: 'blur(10px)',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.2)'
+              }}
+            >
+              <h3 
+                className="text-3xl font-bold mb-6 text-center text-orange-400"
+                style={{ fontFamily: '"Rajdhani", sans-serif' }}
+              >
+                🎯 CHALLENGE RULES
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-300">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center border border-orange-500/30">
+                    <span className="text-orange-400 font-bold">10</span>
                   </div>
-                  <div className="text-sm text-gray-300">{result.playerName}</div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    {result.isCorrect ? `✓ ${result.timeUsed}s` : '✗ Time up'} 
-                    {result.wrongAttempts > 0 && ` • ${result.wrongAttempts} wrong`}
-                  </div>
+                  <span style={{ fontFamily: '"Inter", sans-serif' }}>Rounds of pro identification</span>
                 </div>
-              ))}
-            </div>
-            
-            <div className="text-center">
-              <button
-                onClick={handleRestartGame}
-                className="px-8 py-4 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold text-lg rounded-lg transition-all mr-4"
-              >
-                Play Again
-              </button>
-              <button
-                onClick={onBackToHome}
-                className="px-8 py-4 bg-gray-600 hover:bg-gray-700 text-white font-bold text-lg rounded-lg transition-all"
-              >
-                Back to Home
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : showRoundSummary ? (
-        <div className="flex flex-col items-center w-full max-w-md">
-          <div className={`p-6 w-full rounded-lg ${isCorrect ? 'bg-green-900 border-green-600' : 'bg-red-900 border-red-600'} border`}>
-            <h3 className="text-2xl font-bold text-center mb-4">
-              Round {currentRound} {isCorrect ? 'Complete!' : 'Failed'}
-            </h3>
-            
-            <div className="text-center mb-4">
-              <div className="text-4xl font-bold mb-2">
-                {isCorrect ? `+${currentRoundScore}` : '0'} pts
+                
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center border border-blue-500/30">
+                    <span className="text-blue-400 font-bold">30</span>
+                  </div>
+                  <span style={{ fontFamily: '"Inter", sans-serif' }}>Seconds per round</span>
+                </div>
+                
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center border border-green-500/30">
+                    <span className="text-green-400 font-bold">💯</span>
+                  </div>
+                  <span style={{ fontFamily: '"Inter", sans-serif' }}>Starting points each round</span>
+                </div>
+                
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center border border-red-500/30">
+                    <span className="text-red-400 font-bold">-15</span>
+                  </div>
+                  <span style={{ fontFamily: '"Inter", sans-serif' }}>Points for wrong guesses</span>
+                </div>
               </div>
-              <div className="text-lg text-gray-300">
-                Player: <strong>{currentPlayer.name}</strong>
-              </div>
-              {isCorrect && (
-                <div className="text-sm text-gray-400 mt-2">
-                  Solved in {30 - timeLeft} seconds
-                  {wrongAttempts > 0 && ` • ${wrongAttempts} wrong attempts`}
+            </div>
+
+            {/* Mode Selection */}
+            <div className={`grid gap-8 w-full ${!initialGameMode ? 'grid-cols-1 lg:grid-cols-2 max-w-5xl' : 'max-w-lg'} justify-center`}>
+              {/* Headshot Mode */}
+              {(!initialGameMode || initialGameMode === 'headshot') && (
+                <div 
+                  className="flex flex-col items-center p-8 rounded-lg border-2 border-gray-700 hover:border-orange-500 transition-all duration-300 group"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(20, 25, 40, 0.9) 0%, rgba(35, 40, 55, 0.8) 100%)',
+                    backdropFilter: 'blur(10px)',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
+                  }}
+                >
+                  <div className="text-7xl mb-6 group-hover:scale-110 transition-transform duration-300">🎯</div>
+                  <h4 
+                    className="text-3xl font-black mb-4 text-orange-400 group-hover:text-orange-300 transition-colors"
+                    style={{ fontFamily: '"Rajdhani", sans-serif', letterSpacing: '0.1em' }}
+                  >
+                    HEADSHOT MODE
+                  </h4>
+                  <p 
+                    className="text-gray-300 text-center mb-8 leading-relaxed max-w-sm"
+                    style={{ fontFamily: '"Inter", sans-serif' }}
+                  >
+                    Identify players from their close-up headshot photos. Perfect for testing your knowledge of pro player faces.
+                  </p>
+                  <button 
+                    onClick={() => handleModeSelect('headshot')}
+                    className="px-8 py-4 font-bold text-lg rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+                    style={{
+                      background: 'linear-gradient(45deg, #FF6B35, #F39C12)',
+                      color: '#000',
+                      fontFamily: '"Rajdhani", sans-serif',
+                      letterSpacing: '0.1em',
+                      boxShadow: '0 4px 15px rgba(255, 107, 53, 0.3)'
+                    }}
+                  >
+                    START HEADSHOT MODE
+                  </button>
+                </div>
+              )}
+
+              {/* Free-for-All Mode */}
+              {(!initialGameMode || initialGameMode === 'free-for-all') && (
+                <div 
+                  className="flex flex-col items-center p-8 rounded-lg border-2 border-gray-700 hover:border-purple-500 transition-all duration-300 group"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(20, 25, 40, 0.9) 0%, rgba(35, 40, 55, 0.8) 100%)',
+                    backdropFilter: 'blur(10px)',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
+                  }}
+                >
+                  <div className="text-7xl mb-6 group-hover:scale-110 transition-transform duration-300">🎲</div>
+                  <h4 
+                    className="text-3xl font-black mb-4 text-purple-400 group-hover:text-purple-300 transition-colors"
+                    style={{ fontFamily: '"Rajdhani", sans-serif', letterSpacing: '0.1em' }}
+                  >
+                    FREE-FOR-ALL MODE
+                  </h4>
+                  <p 
+                    className="text-gray-300 text-center mb-8 leading-relaxed max-w-sm"
+                    style={{ fontFamily: '"Inter", sans-serif' }}
+                  >
+                    Random images from tournaments, streams, and events. More challenging with varied angles and contexts.
+                  </p>
+                  <button 
+                    onClick={() => handleModeSelect('free-for-all')}
+                    className="px-8 py-4 font-bold text-lg rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+                    style={{
+                      background: 'linear-gradient(45deg, #8E44AD, #3498DB)',
+                      color: '#fff',
+                      fontFamily: '"Rajdhani", sans-serif',
+                      letterSpacing: '0.1em',
+                      boxShadow: '0 4px 15px rgba(142, 68, 173, 0.3)'
+                    }}
+                  >
+                    START FREE-FOR-ALL
+                  </button>
                 </div>
               )}
             </div>
-            
-            <div className="text-center text-gray-400 mb-4">
-              <div>Total Score: <strong className="text-white">{totalScore}</strong></div>
-              <div>Round {currentRound} of {maxRounds}</div>
-            </div>
-            
-            <button
-              ref={nextRoundButtonRef}
-              onClick={handleNextRound}
-              className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+          </div>
+        ) : gameComplete ? (
+          /* Game Complete Screen */
+          <div className="flex flex-col items-center w-full max-w-4xl justify-center">
+            <div 
+              className="p-8 rounded-lg border border-gray-700 w-full"
+              style={{
+                background: 'linear-gradient(135deg, rgba(26, 31, 46, 0.9) 0%, rgba(45, 55, 72, 0.7) 100%)',
+                backdropFilter: 'blur(10px)',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+              }}
             >
-              {currentRound >= maxRounds ? 'View Final Results' : 'Next Round'} 
-              <span className="text-sm text-gray-300 ml-2">(Press Enter)</span>
-            </button>
-          </div>
-        </div>
-      ) : (
-        <div className="flex flex-col items-center w-full max-w-md">
-          {/* Game status header */}
-          <div className="mb-6 flex items-center justify-between w-full bg-gray-800 border border-gray-700 rounded-lg p-4">
-            <div className="text-center">
-              <div className="text-sm text-gray-400">Round</div>
-              <div className="text-xl font-bold text-yellow-400">{currentRound}/{maxRounds}</div>
-            </div>
-            <div className="text-center">
-              <div className="text-sm text-gray-400">Time</div>
-              <div className={`text-2xl font-bold ${timeLeft <= 10 ? 'text-red-400' : (imageLoaded && !loading) ? 'text-white' : 'text-gray-500'}`}>
-                {(imageLoaded && !loading) ? `${timeLeft}s` : 'Loading...'}
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="text-sm text-gray-400">Score</div>
-              <div className={`text-xl font-bold ${currentRoundScore > 75 ? 'text-green-400' : currentRoundScore > 50 ? 'text-yellow-400' : 'text-red-400'}`}>
-                {Math.round(currentRoundScore)}
-              </div>
-            </div>
-          </div>
-          
-          {/* Total score display */}
-          <div className="mb-4 bg-gray-800 border border-gray-700 rounded px-4 py-2">
-            <span className="text-gray-400 mr-2">Total Score:</span>
-            <span className="font-bold text-white text-lg">{totalScore}</span>
-          </div>
-          
-          {/* Wrong attempts counter */}
-          {wrongAttempts > 0 && (
-            <div className="mb-4 bg-red-900 border border-red-600 rounded px-4 py-2">
-              <span className="text-red-200 mr-2">Wrong attempts:</span>
-              <span className="font-bold text-red-400">{wrongAttempts}</span>
-            </div>
-          )}
-
-          {/* Loading state */}
-          {loading && (
-            <div className="mb-4 bg-gray-800 border border-gray-700 rounded px-4 py-2 flex items-center">
-              <div className="w-4 h-4 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin mr-2"></div>
-              <span className="text-gray-300">Loading player...</span>
-            </div>
-          )}
-
-          {/* Error state during game */}
-          {error && gameStarted && (
-            <div className="mb-4 bg-red-900 border border-red-600 rounded px-4 py-2">
-              <span className="text-red-200">{error}</span>
-            </div>
-          )}
-          
-          {currentPlayer && (
-            <ImageReveal 
-              src={gameMode === 'free-for-all' && currentImageUrl 
-                ? `http://localhost:3000/api/freeforall?path=${encodeURIComponent(currentImageUrl)}` 
-                : `http://localhost:3000/api/headshot?id=${currentPlayer.headshotId}`
-              }
-              totalBlocks={25} 
-              interval={1200}
-              key={`${currentPlayer.id}-${gameMode}-${currentImageUrl || 'headshot'}`}
-              onImageLoaded={setImageLoaded}
-            />
-          )}
-          
-          {/* Guess input */}
-          <div className="w-full mt-6">
-            <form onSubmit={handleSubmitGuess} className="flex gap-2">
-              <input
-                ref={inputRef}
-                type="text"
-                value={answer}
-                onChange={(e) => setAnswer(e.target.value)}
-                placeholder={(imageLoaded && !loading) ? "Enter player name..." : "Loading..."}
-                className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white text-lg focus:border-blue-500 focus:outline-none"
-                disabled={hasGuessed || !currentPlayer || !imageLoaded || loading}
-                autoComplete="off"
-                autoFocus
-              />
-              <button
-                type="submit"
-                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                disabled={hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading}
+              <h3 
+                className="text-4xl font-black mb-6 text-center"
+                style={{
+                  fontFamily: '"Rajdhani", sans-serif',
+                  background: 'linear-gradient(45deg, #FFD700, #FFA500)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
               >
-                Submit
-              </button>
-            </form>
+                🏆 CHALLENGE COMPLETE! 🏆
+              </h3>
+              
+              <div className="text-center mb-8">
+                <div 
+                  className="text-6xl font-black mb-2"
+                  style={{
+                    fontFamily: '"Rajdhani", sans-serif',
+                    background: 'linear-gradient(45deg, #FF6B35, #F39C12)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}
+                >
+                  {totalScore}
+                </div>
+                <div className="text-xl text-gray-300 mb-2" style={{ fontFamily: '"Inter", sans-serif' }}>Total Score</div>
+                <div className="text-lg text-gray-400" style={{ fontFamily: '"Inter", sans-serif' }}>
+                  Average: {Math.round(totalScore / maxRounds)} points per round
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                {roundResults.map((result, index) => (
+                  <div 
+                    key={index} 
+                    className="p-4 rounded border"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(20, 25, 40, 0.8) 0%, rgba(35, 40, 55, 0.6) 100%)',
+                      borderColor: result.isCorrect ? '#10B981' : '#EF4444'
+                    }}
+                  >
+                    <div className="flex justify-between items-center mb-2">
+                      <span 
+                        className="font-bold text-orange-400"
+                        style={{ fontFamily: '"Rajdhani", sans-serif' }}
+                      >
+                        Round {result.round}
+                      </span>
+                      <span 
+                        className={`font-bold ${result.isCorrect ? 'text-green-400' : 'text-red-400'}`}
+                        style={{ fontFamily: '"Rajdhani", sans-serif' }}
+                      >
+                        {result.score} pts
+                      </span>
+                    </div>
+                    <div className="text-sm text-gray-300" style={{ fontFamily: '"Inter", sans-serif' }}>
+                      {result.playerName}
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1" style={{ fontFamily: '"Inter", sans-serif' }}>
+                      {result.isCorrect ? `✓ ${result.timeUsed}s` : '✗ Time up'} 
+                      {result.wrongAttempts > 0 && ` • ${result.wrongAttempts} wrong`}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="text-center space-x-4">
+                <button
+                  onClick={handleRestartGame}
+                  className="px-8 py-4 font-bold text-lg rounded-lg transition-all duration-300 transform hover:scale-105"
+                  style={{
+                    background: 'linear-gradient(45deg, #10B981, #059669)',
+                    color: '#fff',
+                    fontFamily: '"Rajdhani", sans-serif',
+                    letterSpacing: '0.1em',
+                    boxShadow: '0 4px 15px rgba(16, 185, 129, 0.3)'
+                  }}
+                >
+                  PLAY AGAIN
+                </button>
+                <button
+                  onClick={onBackToHome}
+                  className="px-8 py-4 bg-gray-600 hover:bg-gray-500 text-white font-bold text-lg rounded-lg transition-all"
+                  style={{ fontFamily: '"Rajdhani", sans-serif', letterSpacing: '0.1em' }}
+                >
+                  BACK TO HOME
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      )}
+        ) : showRoundSummary ? (
+          /* Round Summary Screen */
+          <div className="flex flex-col items-center w-full max-w-lg mx-auto justify-center">
+            <div 
+              className={`p-8 w-full rounded-lg border-2`}
+              style={{
+                background: isCorrect 
+                  ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.1) 100%)'
+                  : 'linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.1) 100%)',
+                borderColor: isCorrect ? '#10B981' : '#EF4444',
+                backdropFilter: 'blur(10px)',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+              }}
+            >
+              <h3 
+                className="text-3xl font-black text-center mb-6"
+                style={{ 
+                  fontFamily: '"Rajdhani", sans-serif',
+                  color: isCorrect ? '#10B981' : '#EF4444'
+                }}
+              >
+                Round {currentRound} {isCorrect ? 'Complete!' : 'Failed'}
+              </h3>
+              
+              <div className="text-center mb-6">
+                <div 
+                  className="text-5xl font-black mb-2"
+                  style={{
+                    fontFamily: '"Rajdhani", sans-serif',
+                    color: isCorrect ? '#10B981' : '#EF4444'
+                  }}
+                >
+                  {isCorrect ? `+${currentRoundScore}` : '0'} pts
+                </div>
+                <div className="text-lg text-gray-300 mb-2" style={{ fontFamily: '"Inter", sans-serif' }}>
+                  Player: <strong className="text-white">{currentPlayer.name}</strong>
+                </div>
+                {isCorrect && (
+                  <div className="text-sm text-gray-400" style={{ fontFamily: '"Inter", sans-serif' }}>
+                    Solved in {30 - timeLeft} seconds
+                    {wrongAttempts > 0 && ` • ${wrongAttempts} wrong attempts`}
+                  </div>
+                )}
+              </div>
+              
+              <div className="text-center text-gray-400 mb-6" style={{ fontFamily: '"Inter", sans-serif' }}>
+                <div>Total Score: <strong className="text-white">{totalScore}</strong></div>
+                <div>Round {currentRound} of {maxRounds}</div>
+              </div>
+              
+              <button
+                ref={nextRoundButtonRef}
+                onClick={handleNextRound}
+                className="w-full px-6 py-4 font-bold text-lg rounded-lg transition-all duration-300 transform hover:scale-105"
+                style={{
+                  background: 'linear-gradient(45deg, #3B82F6, #1D4ED8)',
+                  color: '#fff',
+                  fontFamily: '"Rajdhani", sans-serif',
+                  letterSpacing: '0.1em',
+                  boxShadow: '0 4px 15px rgba(59, 130, 246, 0.3)'
+                }}
+              >
+                {currentRound >= maxRounds ? 'VIEW FINAL RESULTS' : 'NEXT ROUND'}
+                <span className="text-sm text-gray-300 ml-2">(Press Enter)</span>
+              </button>
+            </div>
+          </div>
+        ) : (
+          /* Active Game Screen */
+          <div className="flex flex-col items-center w-full max-w-lg mx-auto justify-center">
+            {/* Game Status Header */}
+            <div 
+              className="mb-8 flex items-center justify-between w-full p-6 rounded-lg border border-gray-700"
+              style={{
+                background: 'linear-gradient(135deg, rgba(26, 31, 46, 0.9) 0%, rgba(45, 55, 72, 0.7) 100%)',
+                backdropFilter: 'blur(10px)',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+              }}
+            >
+              <div className="text-center">
+                <div className="text-sm text-gray-400" style={{ fontFamily: '"Inter", sans-serif' }}>Round</div>
+                <div 
+                  className="text-2xl font-black text-orange-400"
+                  style={{ fontFamily: '"Rajdhani", sans-serif' }}
+                >
+                  {currentRound}/{maxRounds}
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-sm text-gray-400" style={{ fontFamily: '"Inter", sans-serif' }}>Time</div>
+                <div 
+                  className={`text-3xl font-black ${timeLeft <= 10 ? 'text-red-400' : (imageLoaded && !loading) ? 'text-white' : 'text-gray-500'}`}
+                  style={{ fontFamily: '"Rajdhani", sans-serif' }}
+                >
+                  {(imageLoaded && !loading) ? `${timeLeft}s` : 'Loading...'}
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-sm text-gray-400" style={{ fontFamily: '"Inter", sans-serif' }}>Score</div>
+                <div 
+                  className={`text-2xl font-black ${currentRoundScore > 75 ? 'text-green-400' : currentRoundScore > 50 ? 'text-yellow-400' : 'text-red-400'}`}
+                  style={{ fontFamily: '"Rajdhani", sans-serif' }}
+                >
+                  {Math.round(currentRoundScore)}
+                </div>
+              </div>
+            </div>
+            
+            {/* Total Score Display */}
+            <div 
+              className="mb-6 px-6 py-3 rounded-lg border border-gray-700"
+              style={{
+                background: 'linear-gradient(135deg, rgba(20, 25, 40, 0.8) 0%, rgba(35, 40, 55, 0.6) 100%)',
+                backdropFilter: 'blur(5px)'
+              }}
+            >
+              <span className="text-gray-400 mr-2" style={{ fontFamily: '"Inter", sans-serif' }}>Total Score:</span>
+              <span 
+                className="font-black text-white text-xl"
+                style={{ fontFamily: '"Rajdhani", sans-serif' }}
+              >
+                {totalScore}
+              </span>
+            </div>
+            
+            {/* Wrong Attempts Counter */}
+            {wrongAttempts > 0 && (
+              <div 
+                className="mb-6 px-6 py-3 rounded-lg border-2 border-red-500"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.1) 100%)',
+                  backdropFilter: 'blur(5px)'
+                }}
+              >
+                <span className="text-red-200 mr-2" style={{ fontFamily: '"Inter", sans-serif' }}>Wrong attempts:</span>
+                <span 
+                  className="font-black text-red-400"
+                  style={{ fontFamily: '"Rajdhani", sans-serif' }}
+                >
+                  {wrongAttempts}
+                </span>
+              </div>
+            )}
+
+            {/* Loading State */}
+            {loading && (
+              <div 
+                className="mb-6 px-6 py-3 rounded-lg border border-gray-700 flex items-center"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(20, 25, 40, 0.8) 0%, rgba(35, 40, 55, 0.6) 100%)',
+                  backdropFilter: 'blur(5px)'
+                }}
+              >
+                <div className="w-5 h-5 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mr-3"></div>
+                <span className="text-gray-300" style={{ fontFamily: '"Inter", sans-serif' }}>Loading player...</span>
+              </div>
+            )}
+
+            {/* Error State */}
+            {error && gameStarted && (
+              <div 
+                className="mb-6 px-6 py-3 rounded-lg border-2 border-red-500"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.1) 100%)',
+                  backdropFilter: 'blur(5px)'
+                }}
+              >
+                <span className="text-red-200" style={{ fontFamily: '"Inter", sans-serif' }}>{error}</span>
+              </div>
+            )}
+            
+            {/* Image Reveal Component */}
+            {currentPlayer && (
+              <div className="mb-8">
+                <ImageReveal 
+                  src={gameMode === 'free-for-all' && currentImageUrl 
+                    ? `http://localhost:3000/api/freeforall?path=${encodeURIComponent(currentImageUrl)}` 
+                    : `http://localhost:3000/api/headshot?id=${currentPlayer.headshotId}`
+                  }
+                  totalBlocks={25} 
+                  interval={1200}
+                  key={`${currentPlayer.id}-${gameMode}-${currentImageUrl || 'headshot'}`}
+                  onImageLoaded={setImageLoaded}
+                />
+              </div>
+            )}
+            
+            {/* Guess Input */}
+            <div className="w-full">
+              <form onSubmit={handleSubmitGuess} className="flex gap-3">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={answer}
+                  onChange={(e) => setAnswer(e.target.value)}
+                  placeholder={(imageLoaded && !loading) ? "Enter player name..." : "Loading..."}
+                  className="flex-1 px-6 py-4 rounded-lg border border-gray-700 text-white text-lg focus:border-orange-500 focus:outline-none transition-all"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(20, 25, 40, 0.8) 0%, rgba(35, 40, 55, 0.6) 100%)',
+                    backdropFilter: 'blur(5px)',
+                    fontFamily: '"Inter", sans-serif'
+                  }}
+                  disabled={hasGuessed || !currentPlayer || !imageLoaded || loading}
+                  autoComplete="off"
+                  autoFocus
+                />
+                <button
+                  type="submit"
+                  className="px-8 py-4 font-bold text-lg rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  style={{
+                    background: hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading 
+                      ? 'rgba(75, 85, 99, 0.5)' 
+                      : 'linear-gradient(45deg, #3B82F6, #1D4ED8)',
+                    color: '#fff',
+                    fontFamily: '"Rajdhani", sans-serif',
+                    letterSpacing: '0.1em',
+                    boxShadow: hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading 
+                      ? 'none' 
+                      : '0 4px 15px rgba(59, 130, 246, 0.3)'
+                  }}
+                  disabled={hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading}
+                >
+                  SUBMIT
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <style jsx>{`
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+      `}</style>
     </div>
   );
 }
