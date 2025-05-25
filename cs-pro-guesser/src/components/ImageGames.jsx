@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import ImageReveal from './ImageReveal';
 
-export default function HeadshotGame({ onBackToHome }) {
+export default function ImageGames({ onBackToHome }) {
+  const [gameMode, setGameMode] = useState(null);
   const [gameStarted, setGameStarted] = useState(false);
   const [answer, setAnswer] = useState('');
   const [hasGuessed, setHasGuessed] = useState(false);
@@ -9,6 +10,7 @@ export default function HeadshotGame({ onBackToHome }) {
   const [currentRoundScore, setCurrentRoundScore] = useState(100);
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const [currentPlayer, setCurrentPlayer] = useState(null);
+  const [currentImageUrl, setCurrentImageUrl] = useState(null);
   const [gameComplete, setGameComplete] = useState(false);
   const [showRoundSummary, setShowRoundSummary] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -119,7 +121,7 @@ export default function HeadshotGame({ onBackToHome }) {
     if (gameStarted && !currentPlayer && currentRound <= maxRounds) {
       selectRandomPlayer();
     }
-  }, [gameStarted, currentPlayer, currentRound]);
+  }, [gameStarted, currentPlayer, currentRound, gameMode]);
   
   // Handle image loading state changes
   useEffect(() => {
@@ -134,12 +136,12 @@ export default function HeadshotGame({ onBackToHome }) {
     
     try {
       // Send used player IDs to backend to get a unique player
-      const response = await fetch('http://localhost:3000/api/headshotRound', {
+      const response = await fetch('http://localhost:3000/api/ImageGameRounds', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ usedPlayerIds })
+        body: JSON.stringify({ usedPlayerIds, gameMode })
       });
       
       if (!response.ok) throw new Error('Failed to fetch player');
@@ -150,7 +152,17 @@ export default function HeadshotGame({ onBackToHome }) {
       setUsedPlayerIds(prev => [...prev, playerData.id]);
       setCurrentPlayer(playerData);
       
+      // For free-for-all mode, set the selected random image URL
+      if (gameMode === 'free-for-all' && playerData.selectedImageUrl) {
+        setCurrentImageUrl(playerData.selectedImageUrl);
+      } else {
+        setCurrentImageUrl(null); // Use headshot for headshot mode
+      }
+
       console.log(`Round ${currentRound} - Selected player ID:`, playerData.id);
+      if (gameMode === 'free-for-all') {
+        console.log('Selected image URL:', playerData.selectedImageUrl);
+      }
     } catch (err) {
       console.error('Error selecting player:', err);
       setError('Failed to load player. Please try again.');
@@ -265,15 +277,17 @@ export default function HeadshotGame({ onBackToHome }) {
     } else {
       setCurrentRound(prev => prev + 1);
       setCurrentPlayer(null);
+      setCurrentImageUrl(null);
       setAnswer('');
       setHasGuessed(false);
       setIsCorrect(false);
       setShowRoundSummary(false);
-      setImageLoaded(false); // Reset image loaded state for next round
+      setImageLoaded(false); 
     }
   };
 
-  const handleStartClick = () => {
+  const handleModeSelect = (mode) => {
+    setGameMode(mode);
     setGameStarted(true);
   };
   
@@ -283,6 +297,7 @@ export default function HeadshotGame({ onBackToHome }) {
     if (gameTimerRef.current) clearInterval(gameTimerRef.current);
     
     // Reset all game state
+    setGameMode(null);
     setGameStarted(false);
     setAnswer('');
     setHasGuessed(false);
@@ -290,6 +305,7 @@ export default function HeadshotGame({ onBackToHome }) {
     setCurrentRoundScore(baseScore);
     setWrongAttempts(0);
     setCurrentPlayer(null);
+    setCurrentImageUrl(null);
     setGameComplete(false);
     setShowRoundSummary(false);
     setCurrentRound(1);
@@ -343,25 +359,54 @@ export default function HeadshotGame({ onBackToHome }) {
         Home
       </button>
       
-      <h2 className="text-3xl text-yellow-400 mb-6 font-bold">HEADSHOT MODE</h2>
+      <h2 className="text-3xl text-yellow-400 mb-6 font-bold">PLAYER IDENTIFICATION</h2>
       
       {!gameStarted ? (
-        <div className="flex flex-col items-center p-8 border border-gray-700 rounded-lg bg-gray-800 max-w-lg">
-          <h3 className="text-2xl mb-4 text-white">Ready for the Challenge?</h3>
-          <div className="text-gray-300 mb-6 text-center space-y-2">
-            <p>🎯 <strong>10 rounds</strong> of CS pro identification</p>
-            <p>⏱️ <strong>30 seconds</strong> per round</p>
-            <p>💯 Start with <strong>100 points</strong> each round</p>
-            <p>⚡ <strong>Time bonus</strong> for quick answers</p>
-            <p>❌ <strong>-15 points</strong> for wrong guesses</p>
+        <div className="flex flex-col items-center space-y-6">
+          <div className="text-center mb-6">
+            <h3 className="text-2xl mb-4 text-white">Choose Your Challenge</h3>
+            <div className="text-gray-300 mb-6 text-center space-y-2">
+              <p>🎯 <strong>10 rounds</strong> of CS pro identification</p>
+              <p>⏱️ <strong>30 seconds</strong> per round</p>
+              <p>💯 Start with <strong>100 points</strong> each round</p>
+              <p>⚡ <strong>Time bonus</strong> for quick answers</p>
+              <p>❌ <strong>-15 points</strong> for wrong guesses</p>
+            </div>
           </div>
-          <button 
-            onClick={handleStartClick}
-            className="px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-bold text-lg rounded-lg transition-all transform hover:scale-105"
-          >
-            START 10-ROUND CHALLENGE
-          </button>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
+            {/* Headshot Mode */}
+            <div className="flex flex-col items-center p-8 border border-gray-700 rounded-lg bg-gray-800">
+              <div className="text-6xl mb-4">🎯</div>
+              <h4 className="text-xl font-bold mb-3 text-white">HEADSHOT MODE</h4>
+              <p className="text-gray-300 text-center mb-6">
+                Identify players from their close-up headshot photos. Perfect for testing your knowledge of pro player faces.
+              </p>
+              <button 
+                onClick={() => handleModeSelect('headshot')}
+                className="px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-bold text-lg rounded-lg transition-all transform hover:scale-105"
+              >
+                START HEADSHOT MODE
+              </button>
+            </div>
+
+            {/* Free-for-All Mode */}
+            <div className="flex flex-col items-center p-8 border border-gray-700 rounded-lg bg-gray-800">
+              <div className="text-6xl mb-4">🎲</div>
+              <h4 className="text-xl font-bold mb-3 text-white">FREE-FOR-ALL MODE</h4>
+              <p className="text-gray-300 text-center mb-6">
+                Random images from tournaments, streams, and events. More challenging with varied angles and contexts.
+              </p>
+              <button 
+                onClick={() => handleModeSelect('free-for-all')}
+                className="px-8 py-4 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold text-lg rounded-lg transition-all transform hover:scale-105"
+              >
+                START FREE-FOR-ALL
+              </button>
+            </div>
+          </div>
         </div>
+
       ) : gameComplete ? (
         <div className="flex flex-col items-center w-full max-w-4xl">
           <div className="bg-gradient-to-r from-purple-900 to-blue-900 p-8 rounded-lg border border-gray-600 w-full">
@@ -500,10 +545,13 @@ export default function HeadshotGame({ onBackToHome }) {
           
           {currentPlayer && (
             <ImageReveal 
-              src={`http://localhost:3000/api/headshot?id=${currentPlayer.headshotId}`}
+              src={gameMode === 'free-for-all' && currentImageUrl 
+                ? `http://localhost:3000/api/freeforall?path=${encodeURIComponent(currentImageUrl)}` 
+                : `http://localhost:3000/api/headshot?id=${currentPlayer.headshotId}`
+              }
               totalBlocks={25} 
               interval={1200}
-              key={currentPlayer.id}
+              key={`${currentPlayer.id}-${gameMode}-${currentImageUrl || 'headshot'}`}
               onImageLoaded={setImageLoaded}
             />
           )}

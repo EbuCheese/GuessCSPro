@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './main.css';
 import HomePage from './components/HomePage';
-import HeadshotGame from './components/HeadshotGame';
+import ImageGames from './components/ImageGames';
 
 function App() {
   const [mode, setMode] = useState(null);
@@ -19,7 +19,13 @@ function App() {
       <h1 className="text-3xl mb-5">Guess the Counter-Strike Pro</h1>
       
       {mode === 'headshot' && (
-        <HeadshotGame 
+        <ImageGames 
+          onBackToHome={handleBackToHome}
+        />
+      )}
+
+      {mode === 'free-for-all' && (
+        <ImageGames 
           onBackToHome={handleBackToHome}
         />
       )}
