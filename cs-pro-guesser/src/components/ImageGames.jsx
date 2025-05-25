@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import ImageReveal from './ImageReveal';
 
-export default function ImageGames({ onBackToHome }) {
-  const [gameMode, setGameMode] = useState(null);
+export default function ImageGames({ onBackToHome, initialGameMode  }) {
+  const [gameMode, setGameMode] = useState(initialGameMode || null);
   const [gameStarted, setGameStarted] = useState(false);
   const [answer, setAnswer] = useState('');
   const [hasGuessed, setHasGuessed] = useState(false);
@@ -364,7 +364,7 @@ export default function ImageGames({ onBackToHome }) {
       {!gameStarted ? (
         <div className="flex flex-col items-center space-y-6">
           <div className="text-center mb-6">
-            <h3 className="text-2xl mb-4 text-white">Choose Your Challenge</h3>
+            <h3 className="text-2xl mb-4 text-white">Challenge</h3>
             <div className="text-gray-300 mb-6 text-center space-y-2">
               <p>🎯 <strong>10 rounds</strong> of CS pro identification</p>
               <p>⏱️ <strong>30 seconds</strong> per round</p>
@@ -374,8 +374,9 @@ export default function ImageGames({ onBackToHome }) {
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
+          <div className={`grid gap-6 w-full ${!initialGameMode ? 'grid-cols-1 md:grid-cols-2 max-w-4xl' : 'max-w-md'}`}>
             {/* Headshot Mode */}
+            {(!initialGameMode || initialGameMode === 'headshot') && (
             <div className="flex flex-col items-center p-8 border border-gray-700 rounded-lg bg-gray-800">
               <div className="text-6xl mb-4">🎯</div>
               <h4 className="text-xl font-bold mb-3 text-white">HEADSHOT MODE</h4>
@@ -389,8 +390,10 @@ export default function ImageGames({ onBackToHome }) {
                 START HEADSHOT MODE
               </button>
             </div>
+            )}
 
             {/* Free-for-All Mode */}
+            {(!initialGameMode || initialGameMode === 'free-for-all') && (
             <div className="flex flex-col items-center p-8 border border-gray-700 rounded-lg bg-gray-800">
               <div className="text-6xl mb-4">🎲</div>
               <h4 className="text-xl font-bold mb-3 text-white">FREE-FOR-ALL MODE</h4>
@@ -404,6 +407,7 @@ export default function ImageGames({ onBackToHome }) {
                 START FREE-FOR-ALL
               </button>
             </div>
+            )}
           </div>
         </div>
 
