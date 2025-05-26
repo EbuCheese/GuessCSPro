@@ -335,9 +335,17 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
       {/* Back Button */}
       <button 
         onClick={onBackToHome}
-        className="absolute top-6 left-6 flex items-center space-x-2 px-4 py-2 rounded-lg border border-gray-700 bg-gray-800/80 backdrop-blur-sm hover:border-orange-500 hover:bg-gray-700/80 transition-all duration-300 z-20 group"
+        className={`absolute top-6 left-6 flex items-center space-x-2 px-4 py-2 rounded-lg border border-gray-700 bg-gray-800/80 backdrop-blur-sm transition-all duration-300 z-20 group ${
+          gameMode === 'free-for-all' 
+            ? 'hover:border-purple-500 hover:bg-gray-700/80' 
+            : 'hover:border-orange-500 hover:bg-gray-700/80'
+        }`}
       >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 group-hover:text-orange-400 transition-colors" viewBox="0 0 20 20" fill="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 text-gray-400 transition-colors ${
+          gameMode === 'free-for-all' 
+            ? 'group-hover:text-purple-400' 
+            : 'group-hover:text-orange-400'
+        }`} viewBox="0 0 20 20" fill="currentColor">
           <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
         </svg>
         <span 
@@ -407,83 +415,184 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
         )}
 
         {!gameStarted ? (
-  <div className="flex flex-col items-center space-y-8 w-full">
-    {/* Challenge Rules */}
-    <div 
-      className="p-8 rounded-lg border border-gray-700 max-w-2xl w-full mx-auto flex flex-col justify-center items-center"
-      style={{
-        background: 'linear-gradient(135deg, rgba(26, 31, 46, 0.9) 0%, rgba(45, 55, 72, 0.7) 100%)',
-        backdropFilter: 'blur(10px)',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.2)'
-      }}
-    >
-      <h3 
-        className="text-3xl font-bold mb-6 text-center"
-        style={{ 
-          fontFamily: '"Rajdhani", sans-serif',
-          color: gameMode === 'free-for-all' ? '#8E44AD' : '#FF6B35'
-        }}
-      >
-        🎯 CHALLENGE RULES
-      </h3>
-      
-      <div className="flex flex-col items-center space-y-5 text-gray-300">
-        {[
-          { color: 'orange', value: '10', label: 'Rounds of pro identification' },
-          { color: 'blue', value: '30', label: 'Seconds per round' },
-          { color: 'green', value: '100', label: 'Starting points each round' },
-          { color: 'red', value: '-15', label: 'Points deducted for wrong guesses' },
-        ].map((item, idx) => (
-          <div
-            key={idx}
-            className="flex items-center w-[280px] space-x-4 ml-3 " // adjust for centering the challenge rules
+        <div className="w-full max-w-4xl">
+          {/* Challenge Rules Header - Now more compact but still detailed */}
+          <div 
+            className="p-6 rounded-xl border-2 text-center mb-8 relative overflow-hidden"
+            style={{
+              background: gameMode === 'free-for-all' 
+                ? 'linear-gradient(135deg, rgba(142, 68, 173, 0.1) 0%, rgba(52, 152, 219, 0.08) 50%, rgba(26, 31, 46, 0.95) 100%)'
+                : gameMode === 'headshot'
+                  ? 'linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(243, 156, 18, 0.08) 50%, rgba(26, 31, 46, 0.95) 100%)'
+                  : 'linear-gradient(135deg, rgba(26, 31, 46, 0.9) 0%, rgba(45, 55, 72, 0.7) 100%)',
+              borderColor: gameMode === 'free-for-all' 
+                ? 'rgba(142, 68, 173, 0.3)' 
+                : gameMode === 'headshot'
+                  ? 'rgba(255, 107, 53, 0.3)'
+                  : 'rgba(107, 114, 128, 0.5)',
+              backdropFilter: 'blur(15px)',
+              boxShadow: gameMode === 'free-for-all'
+                ? '0 8px 32px rgba(142, 68, 173, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+                : gameMode === 'headshot'
+                  ? '0 8px 32px rgba(255, 107, 53, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+                  : '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+            }}
           >
-            {/* Icon Box */}
-            <div
-              className={`w-10 h-10 flex-shrink-0 rounded-lg flex items-center justify-center border bg-${item.color}-500/20 border-${item.color}-500/30`}
-            >
-              <span className={`text-${item.color}-400 font-bold`}>{item.value}</span>
-            </div>
-
-            {/* Text */}
-            <div
-              className="text-base leading-snug text-left"
-              style={{ fontFamily: '"Inter", sans-serif' }}
-            >
-              {item.label}
+            <div className="relative z-10">
+              <h3 
+                className="text-lg md:text-xl font-black mb-4 tracking-wide"
+                style={{ 
+                  fontFamily: '"Rajdhani", sans-serif',
+                  background: gameMode === 'free-for-all'
+                    ? 'linear-gradient(45deg, #8E44AD, #3498DB)'
+                    : gameMode === 'headshot'
+                      ? 'linear-gradient(45deg, #FF6B35, #F39C12)'
+                      : 'linear-gradient(45deg, #6B7280, #9CA3AF)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                ⚡ CHALLENGE RULES ⚡
+              </h3>
+              
+              {/* Horizontal rules layout for better balance */}
+              <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8">
+                <div className="flex items-center gap-2">
+                  <span 
+                    className="text-xl"
+                    style={{
+                      color: gameMode === 'free-for-all' ? '#8E44AD' : gameMode === 'headshot' ? '#FF6B35' : '#6B7280'
+                    }}
+                  >
+                    🔥
+                  </span>
+                  <span 
+                    className="font-bold text-lg"
+                    style={{ 
+                      fontFamily: '"Rajdhani", sans-serif',
+                      color: gameMode === 'free-for-all' ? '#A855F7' : gameMode === 'headshot' ? '#F97316' : '#9CA3AF'
+                    }}
+                  >
+                    10 ROUNDS
+                  </span>
+                </div>
+                
+                <div className="text-gray-500">•</div>
+                
+                <div className="flex items-center gap-2">
+                  <span 
+                    className="text-xl"
+                    style={{
+                      color: gameMode === 'free-for-all' ? '#3498DB' : gameMode === 'headshot' ? '#F39C12' : '#6B7280'
+                    }}
+                  >
+                    ⏱️
+                  </span>
+                  <span 
+                    className="font-bold text-lg"
+                    style={{ 
+                      fontFamily: '"Rajdhani", sans-serif',
+                      color: gameMode === 'free-for-all' ? '#60A5FA' : gameMode === 'headshot' ? '#FBBF24' : '#9CA3AF'
+                    }}
+                  >
+                    30s EACH
+                  </span>
+                </div>
+                
+                <div className="text-gray-500">•</div>
+                
+                <div className="flex items-center gap-2">
+                  <span className="text-xl text-green-400">💯</span>
+                  <span 
+                    className="font-bold text-lg text-green-400"
+                    style={{ fontFamily: '"Rajdhani", sans-serif' }}
+                  >
+                    100 START PTS
+                  </span>
+                </div>
+                
+                <div className="text-gray-500">•</div>
+                
+                <div className="flex items-center gap-2">
+                  <span className="text-xl text-red-400">❌</span>
+                  <span 
+                    className="font-bold text-lg text-red-400"
+                    style={{ fontFamily: '"Rajdhani", sans-serif' }}
+                  >
+                    -15 PENALTY
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
-        ))}
-      </div>
-    </div>
-            {/* Mode Selection */}
-            <div className={`grid gap-8 w-full ${!initialGameMode ? 'grid-cols-1 lg:grid-cols-2 max-w-5xl' : 'max-w-lg'} justify-center`}>
-              {/* Headshot Mode */}
-              {(!initialGameMode || initialGameMode === 'headshot') && (
+
+          {/* Mode Selection - Enhanced with more content to match rules height */}
+          <div className={`grid gap-8 w-full ${!initialGameMode ? 'grid-cols-1 lg:grid-cols-2' : 'max-w-lg mx-auto'}`}>
+            {/* Headshot Mode */}
+            {(!initialGameMode || initialGameMode === 'headshot') && (
+              <div 
+                className="p-8 rounded-xl border-2 border-gray-700 hover:border-orange-500 transition-all duration-300 group relative overflow-hidden"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(243, 156, 18, 0.03) 30%, rgba(20, 25, 40, 0.95) 100%)',
+                  backdropFilter: 'blur(15px)',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                  minHeight: '480px'
+                }}
+              >
+                {/* Subtle background pattern */}
                 <div 
-                  className="flex flex-col items-center p-8 rounded-lg border-2 border-gray-700 hover:border-orange-500 transition-all duration-300 group"
+                  className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity duration-300"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(20, 25, 40, 0.9) 0%, rgba(35, 40, 55, 0.8) 100%)',
-                    backdropFilter: 'blur(10px)',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
+                    background: 'radial-gradient(circle at 30% 20%, rgba(255, 107, 53, 0.1) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(243, 156, 18, 0.08) 0%, transparent 50%)'
                   }}
-                >
-                  <div className="text-7xl mb-6 group-hover:scale-110 transition-transform duration-300">🎯</div>
-                  <h4 
-                    className="text-3xl font-black mb-4 text-orange-400 group-hover:text-orange-300 transition-colors"
-                    style={{ fontFamily: '"Rajdhani", sans-serif', letterSpacing: '0.1em' }}
-                  >
-                    HEADSHOT MODE
-                  </h4>
-                  <p 
-                    className="text-gray-300 text-center mb-8 leading-relaxed max-w-sm"
-                    style={{ fontFamily: '"Inter", sans-serif' }}
-                  >
-                    Identify players from their close-up headshot photos. Perfect for testing your knowledge of pro player faces.
-                  </p>
+                />
+                
+                <div className="relative z-10 h-full flex flex-col">
+                  {/* Icon and Title */}
+                  <div className="text-center mb-6">
+                    <div className="text-7xl mb-4 group-hover:scale-110 transition-transform duration-300">🎯</div>
+                    <h4 
+                      className="text-3xl md:text-4xl font-black mb-3 text-orange-400 group-hover:text-orange-300 transition-colors"
+                      style={{ fontFamily: '"Rajdhani", sans-serif', letterSpacing: '0.1em' }}
+                    >
+                      HEADSHOT MODE
+                    </h4>
+                    <div 
+                      className="h-1 w-20 mx-auto rounded-full bg-gradient-to-r from-orange-500 to-yellow-500 group-hover:w-32 transition-all duration-300"
+                    />
+                  </div>
+                  
+                  {/* Description */}
+                  <div className="flex-1 flex flex-col justify-center">
+                    <p 
+                      className="text-gray-300 text-center leading-relaxed text-base md:text-lg mb-6"
+                      style={{ fontFamily: '"Inter", sans-serif' }}
+                    >
+                      Identify players from their close-up headshot photos. Perfect for testing your knowledge of pro player faces and recognition skills.
+                    </p>
+                    
+                    {/* Features list */}
+                    <div className="space-y-3 mb-6">
+                      <div className="flex items-center justify-center text-sm text-gray-400">
+                        <span className="text-orange-400 mr-2">✓</span>
+                        <span style={{ fontFamily: '"Inter", sans-serif' }}>Clean headshot photos</span>
+                      </div>
+                      <div className="flex items-center justify-center text-sm text-gray-400">
+                        <span className="text-orange-400 mr-2">✓</span>
+                        <span style={{ fontFamily: '"Inter", sans-serif' }}>Focus on facial recognition</span>
+                      </div>
+                      <div className="flex items-center justify-center text-sm text-gray-400">
+                        <span className="text-orange-400 mr-2">✓</span>
+                        <span style={{ fontFamily: '"Inter", sans-serif' }}>Great for beginners</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Button */}
                   <button 
                     onClick={() => handleModeSelect('headshot')}
-                    className="px-8 py-4 font-bold text-lg rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+                    className="w-full px-6 py-4 font-bold text-lg rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg group-hover:shadow-xl"
                     style={{
                       background: 'linear-gradient(45deg, #FF6B35, #F39C12)',
                       color: '#000',
@@ -495,34 +604,73 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
                     START HEADSHOT MODE
                   </button>
                 </div>
-              )}
+              </div>
+            )}
 
-              {/* Free-for-All Mode */}
-              {(!initialGameMode || initialGameMode === 'free-for-all') && (
+            {/* Free-for-All Mode */}
+            {(!initialGameMode || initialGameMode === 'free-for-all') && (
+              <div 
+                className="p-8 rounded-xl border-2 border-gray-700 hover:border-purple-500 transition-all duration-300 group relative overflow-hidden"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(142, 68, 173, 0.05) 0%, rgba(52, 152, 219, 0.03) 30%, rgba(20, 25, 40, 0.95) 100%)',
+                  backdropFilter: 'blur(15px)',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                  minHeight: '480px'
+                }}
+              >
+                {/* Subtle background pattern */}
                 <div 
-                  className="flex flex-col items-center p-8 rounded-lg border-2 border-gray-700 hover:border-purple-500 transition-all duration-300 group"
+                  className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity duration-300"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(20, 25, 40, 0.9) 0%, rgba(35, 40, 55, 0.8) 100%)',
-                    backdropFilter: 'blur(10px)',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
+                    background: 'radial-gradient(circle at 30% 20%, rgba(142, 68, 173, 0.1) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(52, 152, 219, 0.08) 0%, transparent 50%)'
                   }}
-                >
-                  <div className="text-7xl mb-6 group-hover:scale-110 transition-transform duration-300">🎲</div>
-                  <h4 
-                    className="text-3xl font-black mb-4 text-purple-400 group-hover:text-purple-300 transition-colors"
-                    style={{ fontFamily: '"Rajdhani", sans-serif', letterSpacing: '0.1em' }}
-                  >
-                    FREE-FOR-ALL MODE
-                  </h4>
-                  <p 
-                    className="text-gray-300 text-center mb-8 leading-relaxed max-w-sm"
-                    style={{ fontFamily: '"Inter", sans-serif' }}
-                  >
-                    Random images from tournaments, streams, and events. More challenging with varied angles and contexts.
-                  </p>
+                />
+                
+                <div className="relative z-10 h-full flex flex-col">
+                  {/* Icon and Title */}
+                  <div className="text-center mb-6">
+                    <div className="text-7xl mb-4 group-hover:scale-110 transition-transform duration-300">🎲</div>
+                    <h4 
+                      className="text-3xl md:text-4xl font-black mb-3 text-purple-400 group-hover:text-purple-300 transition-colors"
+                      style={{ fontFamily: '"Rajdhani", sans-serif', letterSpacing: '0.1em' }}
+                    >
+                      FREE-FOR-ALL MODE
+                    </h4>
+                    <div 
+                      className="h-1 w-20 mx-auto rounded-full bg-gradient-to-r from-purple-500 to-blue-500 group-hover:w-32 transition-all duration-300"
+                    />
+                  </div>
+                  
+                  {/* Description */}
+                  <div className="flex-1 flex flex-col justify-center">
+                    <p 
+                      className="text-gray-300 text-center leading-relaxed text-base md:text-lg mb-6"
+                      style={{ fontFamily: '"Inter", sans-serif' }}
+                    >
+                      Random images from tournaments, streams, and events. More challenging with varied angles, contexts, and situations.
+                    </p>
+                    
+                    {/* Features list */}
+                    <div className="space-y-3 mb-6">
+                      <div className="flex items-center justify-center text-sm text-gray-400">
+                        <span className="text-purple-400 mr-2">✓</span>
+                        <span style={{ fontFamily: '"Inter", sans-serif' }}>Tournament & event photos</span>
+                      </div>
+                      <div className="flex items-center justify-center text-sm text-gray-400">
+                        <span className="text-purple-400 mr-2">✓</span>
+                        <span style={{ fontFamily: '"Inter", sans-serif' }}>Various angles & contexts</span>
+                      </div>
+                      <div className="flex items-center justify-center text-sm text-gray-400">
+                        <span className="text-purple-400 mr-2">✓</span>
+                        <span style={{ fontFamily: '"Inter", sans-serif' }}>Expert difficulty</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Button */}
                   <button 
                     onClick={() => handleModeSelect('free-for-all')}
-                    className="px-8 py-4 font-bold text-lg rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+                    className="w-full px-6 py-4 font-bold text-lg rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg group-hover:shadow-xl"
                     style={{
                       background: 'linear-gradient(45deg, #8E44AD, #3498DB)',
                       color: '#fff',
@@ -534,9 +682,10 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
                     START FREE-FOR-ALL
                   </button>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
+        </div>
         ) : gameComplete ? (
           /* Game Complete Screen - Centered with top margin to align with back button */
           <div className="flex flex-col items-center w-full max-w-4xl justify-center mt-20">
@@ -816,7 +965,9 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
                   backdropFilter: 'blur(5px)'
                 }}
               >
-                <div className="w-5 h-5 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mr-3"></div>
+                <div className={`w-5 h-5 border-2 border-t-transparent rounded-full animate-spin mr-3 ${
+                  gameMode === 'free-for-all' ? 'border-purple-500' : 'border-orange-500'
+                }`}></div>
                 <span className="text-gray-300" style={{ fontFamily: '"Inter", sans-serif' }}>Loading player...</span>
               </div>
             )}
@@ -859,7 +1010,9 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
                   value={answer}
                   onChange={(e) => setAnswer(e.target.value)}
                   placeholder={(imageLoaded && !loading) ? "Enter player name..." : "Loading..."}
-                  className="flex-1 px-6 py-4 rounded-lg border border-gray-700 text-white text-lg focus:border-orange-500 focus:outline-none transition-all"
+                  className={`flex-1 px-6 py-4 rounded-lg border border-gray-700 text-white text-lg transition-all focus:outline-none ${
+                    gameMode === 'free-for-all' ? 'focus:border-purple-500' : 'focus:border-orange-500'
+                  }`}
                   style={{
                     background: 'linear-gradient(135deg, rgba(20, 25, 40, 0.8) 0%, rgba(35, 40, 55, 0.6) 100%)',
                     backdropFilter: 'blur(5px)',
