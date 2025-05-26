@@ -349,79 +349,113 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
       </button>
 
       <div className="relative z-10 w-full max-w-6xl px-6 flex flex-col items-center justify-center min-h-screen">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h2 
-            className="text-5xl font-black mb-4 tracking-wider"
-            style={{
-              fontFamily: '"Rajdhani", sans-serif',
-              background: 'linear-gradient(45deg, #FF6B35, #F39C12)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              textShadow: '0 0 20px rgba(255, 107, 53, 0.3)',
-              filter: 'drop-shadow(0 0 8px rgba(255, 107, 53, 0.2))'
-            }}
-          >
-            PLAYER IDENTIFICATION
-          </h2>
-          
-          <div className="flex items-center justify-center space-x-4">
-            <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent w-32"></div>
-            <div className="text-orange-500 text-xl">⚡</div>
-            <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent w-32"></div>
-          </div>
-        </div>
-
-        {!gameStarted ? (
-          <div className="flex flex-col items-center space-y-8 w-full">
-            {/* Challenge Rules */}
-            <div 
-              className="p-8 rounded-lg border border-gray-700 max-w-2xl w-full mx-auto"
+        {/* Header - Only show when NOT in game complete state */}
+        {!gameComplete && (
+          <div className="text-center mb-12">
+            <h2 
+              className="text-5xl font-black mb-4 tracking-wider"
               style={{
-                background: 'linear-gradient(135deg, rgba(26, 31, 46, 0.9) 0%, rgba(45, 55, 72, 0.7) 100%)',
-                backdropFilter: 'blur(10px)',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.2)'
+                fontFamily: '"Rajdhani", sans-serif',
+                background: gameMode === 'free-for-all' 
+                  ? 'linear-gradient(45deg, #8E44AD, #3498DB)' 
+                  : gameMode === 'headshot' 
+                    ? 'linear-gradient(45deg, #FF6B35, #F39C12)'
+                    : 'linear-gradient(45deg, #FF6B35, #F39C12)', // default to orange for mode selection
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                textShadow: gameMode === 'free-for-all' 
+                  ? '0 0 20px rgba(142, 68, 173, 0.3)' 
+                  : '0 0 20px rgba(255, 107, 53, 0.3)',
+                filter: gameMode === 'free-for-all' 
+                  ? 'drop-shadow(0 0 8px rgba(142, 68, 173, 0.2))' 
+                  : 'drop-shadow(0 0 8px rgba(255, 107, 53, 0.2))'
               }}
             >
-              <h3 
-                className="text-3xl font-bold mb-6 text-center text-orange-400"
-                style={{ fontFamily: '"Rajdhani", sans-serif' }}
+              {gameMode === 'headshot' ? 'HEADSHOT MODE' : 
+               gameMode === 'free-for-all' ? 'FREE-FOR-ALL MODE' : 
+               'PLAYER IDENTIFICATION'}
+            </h2>
+            
+            <div className="flex items-center justify-center space-x-4">
+              <div 
+                className="h-px bg-gradient-to-r from-transparent to-transparent w-32"
+                style={{
+                  background: gameMode === 'free-for-all' 
+                    ? 'linear-gradient(to right, transparent, #8E44AD, transparent)' 
+                    : 'linear-gradient(to right, transparent, #FF6B35, transparent)'
+                }}
+              ></div>
+              <div 
+                className="text-xl"
+                style={{
+                  color: gameMode === 'free-for-all' ? '#8E44AD' : '#FF6B35'
+                }}
               >
-                🎯 CHALLENGE RULES
-              </h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-300">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center border border-orange-500/30">
-                    <span className="text-orange-400 font-bold">10</span>
-                  </div>
-                  <span style={{ fontFamily: '"Inter", sans-serif' }}>Rounds of pro identification</span>
-                </div>
-                
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center border border-blue-500/30">
-                    <span className="text-blue-400 font-bold">30</span>
-                  </div>
-                  <span style={{ fontFamily: '"Inter", sans-serif' }}>Seconds per round</span>
-                </div>
-                
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center border border-green-500/30">
-                    <span className="text-green-400 font-bold">💯</span>
-                  </div>
-                  <span style={{ fontFamily: '"Inter", sans-serif' }}>Starting points each round</span>
-                </div>
-                
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center border border-red-500/30">
-                    <span className="text-red-400 font-bold">-15</span>
-                  </div>
-                  <span style={{ fontFamily: '"Inter", sans-serif' }}>Points for wrong guesses</span>
-                </div>
+                ⚡
               </div>
+              <div 
+                className="h-px bg-gradient-to-r from-transparent to-transparent w-32"
+                style={{
+                  background: gameMode === 'free-for-all' 
+                    ? 'linear-gradient(to right, transparent, #8E44AD, transparent)' 
+                    : 'linear-gradient(to right, transparent, #FF6B35, transparent)'
+                }}
+              ></div>
+            </div>
+          </div>
+        )}
+
+        {!gameStarted ? (
+  <div className="flex flex-col items-center space-y-8 w-full">
+    {/* Challenge Rules */}
+    <div 
+      className="p-8 rounded-lg border border-gray-700 max-w-2xl w-full mx-auto flex flex-col justify-center items-center"
+      style={{
+        background: 'linear-gradient(135deg, rgba(26, 31, 46, 0.9) 0%, rgba(45, 55, 72, 0.7) 100%)',
+        backdropFilter: 'blur(10px)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.2)'
+      }}
+    >
+      <h3 
+        className="text-3xl font-bold mb-6 text-center"
+        style={{ 
+          fontFamily: '"Rajdhani", sans-serif',
+          color: gameMode === 'free-for-all' ? '#8E44AD' : '#FF6B35'
+        }}
+      >
+        🎯 CHALLENGE RULES
+      </h3>
+      
+      <div className="flex flex-col items-center space-y-5 text-gray-300">
+        {[
+          { color: 'orange', value: '10', label: 'Rounds of pro identification' },
+          { color: 'blue', value: '30', label: 'Seconds per round' },
+          { color: 'green', value: '100', label: 'Starting points each round' },
+          { color: 'red', value: '-15', label: 'Points deducted for wrong guesses' },
+        ].map((item, idx) => (
+          <div
+            key={idx}
+            className="flex items-center w-[280px] space-x-4 ml-3 " // adjust for centering the challenge rules
+          >
+            {/* Icon Box */}
+            <div
+              className={`w-10 h-10 flex-shrink-0 rounded-lg flex items-center justify-center border bg-${item.color}-500/20 border-${item.color}-500/30`}
+            >
+              <span className={`text-${item.color}-400 font-bold`}>{item.value}</span>
             </div>
 
+            {/* Text */}
+            <div
+              className="text-base leading-snug text-left"
+              style={{ fontFamily: '"Inter", sans-serif' }}
+            >
+              {item.label}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
             {/* Mode Selection */}
             <div className={`grid gap-8 w-full ${!initialGameMode ? 'grid-cols-1 lg:grid-cols-2 max-w-5xl' : 'max-w-lg'} justify-center`}>
               {/* Headshot Mode */}
@@ -504,8 +538,8 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
             </div>
           </div>
         ) : gameComplete ? (
-          /* Game Complete Screen */
-          <div className="flex flex-col items-center w-full max-w-4xl justify-center">
+          /* Game Complete Screen - Centered with top margin to align with back button */
+          <div className="flex flex-col items-center w-full max-w-4xl justify-center mt-20">
             <div 
               className="p-8 rounded-lg border border-gray-700 w-full"
               style={{
@@ -514,8 +548,24 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
               }}
             >
+              {/* Game Mode Title */}
+              <h2 
+                className="text-5xl font-black mb-4 text-center"
+                style={{
+                  fontFamily: '"Rajdhani", sans-serif',
+                  background: gameMode === 'free-for-all' 
+                    ? 'linear-gradient(45deg, #8E44AD, #3498DB)' 
+                    : 'linear-gradient(45deg, #FF6B35, #F39C12)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                {gameMode === 'headshot' ? 'HEADSHOT MODE' : 'FREE-FOR-ALL MODE'}
+              </h2>
+              
               <h3 
-                className="text-4xl font-black mb-6 text-center"
+                className="text-3xl font-black mb-6 text-center"
                 style={{
                   fontFamily: '"Rajdhani", sans-serif',
                   background: 'linear-gradient(45deg, #FFD700, #FFA500)',
@@ -532,7 +582,9 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
                   className="text-6xl font-black mb-2"
                   style={{
                     fontFamily: '"Rajdhani", sans-serif',
-                    background: 'linear-gradient(45deg, #FF6B35, #F39C12)',
+                    background: gameMode === 'free-for-all' 
+                      ? 'linear-gradient(45deg, #8E44AD, #3498DB)' 
+                      : 'linear-gradient(45deg, #FF6B35, #F39C12)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     backgroundClip: 'text'
@@ -558,8 +610,11 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
                   >
                     <div className="flex justify-between items-center mb-2">
                       <span 
-                        className="font-bold text-orange-400"
-                        style={{ fontFamily: '"Rajdhani", sans-serif' }}
+                        className="font-bold"
+                        style={{ 
+                          fontFamily: '"Rajdhani", sans-serif',
+                          color: gameMode === 'free-for-all' ? '#8E44AD' : '#FF6B35'
+                        }}
                       >
                         Round {result.round}
                       </span>
@@ -687,8 +742,11 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
               <div className="text-center">
                 <div className="text-sm text-gray-400" style={{ fontFamily: '"Inter", sans-serif' }}>Round</div>
                 <div 
-                  className="text-2xl font-black text-orange-400"
-                  style={{ fontFamily: '"Rajdhani", sans-serif' }}
+                  className="text-2xl font-black"
+                  style={{ 
+                    fontFamily: '"Rajdhani", sans-serif',
+                    color: gameMode === 'free-for-all' ? '#8E44AD' : '#FF6B35'
+                  }}
                 >
                   {currentRound}/{maxRounds}
                 </div>

@@ -16,8 +16,8 @@ export default function HomePage({ onSelectMode }) {
       id: 'free-for-all', 
       name: 'FREE FOR ALL', 
       description: 'Guess the pro based off random img of them!',
-      icon: '⚡',
-      color: '#4ECDC4'
+      icon: '🎲',
+      color: '#c27aff'
     },
     { 
       id: 'quotes', 
@@ -31,7 +31,7 @@ export default function HomePage({ onSelectMode }) {
       name: 'HARDCORE', 
       description: 'Very minimal data provided, can you guess the pro?',
       icon: '⚠️',
-      color: '#E74C3C'
+      color: '#f52a2a'
     },
   ];
 
@@ -125,12 +125,14 @@ export default function HomePage({ onSelectMode }) {
               onMouseLeave={() => setHoveredMode(null)}
               className={`
                 relative p-8 rounded-lg transition-all duration-300 border-2 overflow-hidden group
+                transform transition-transform duration-300
                 ${hoveredMode === mode.id 
-                  ? 'border-orange-500 transform scale-105' 
-                  : 'border-gray-700 hover:border-gray-600'
+                  ? 'scale-105' 
+                  : 'hover:border-gray-600'
                 }
               `}
               style={{
+                borderColor: hoveredMode === mode.id ? mode.color : '#374151',
                 background: hoveredMode === mode.id 
                   ? `linear-gradient(135deg, rgba(26, 31, 46, 0.9) 0%, rgba(45, 55, 72, 0.9) 100%)`
                   : `linear-gradient(135deg, rgba(20, 25, 40, 0.8) 0%, rgba(35, 40, 55, 0.8) 100%)`,
@@ -171,12 +173,13 @@ export default function HomePage({ onSelectMode }) {
               {/* Mode Name */}
               <div 
                 className={`text-2xl font-black mb-4 transition-all duration-300 ${
-                  hoveredMode === mode.id ? 'text-orange-400' : 'text-white'
+                  hoveredMode === mode.id ? '' : 'text-white'
                 }`}
                 style={{
                   fontFamily: '"Rajdhani", sans-serif',
+                  color: hoveredMode === mode.id ? mode.color : undefined,
                   textShadow: hoveredMode === mode.id 
-                    ? '0 0 10px rgba(255, 107, 53, 0.5)' 
+                    ? `0 0 10px ${mode.color}80` 
                     : '0 2px 4px rgba(0, 0, 0, 0.5)',
                   letterSpacing: '0.1em'
                 }}
@@ -216,12 +219,14 @@ export default function HomePage({ onSelectMode }) {
             <div className="text-orange-500 text-xl">★</div>
           </div>
           
-          <div className="flex items-center justify-center space-x-4 text-sm text-gray-500">
-            <span className="font-semibold">HEADSHOTS</span>
-            <div className="w-1 h-1 bg-orange-500 rounded-full"></div>
-            <span className="font-semibold">CLUTCHES</span>
-            <div className="w-1 h-1 bg-orange-500 rounded-full"></div>
-            <span className="font-semibold">LEGENDS</span>
+          <div className="flex items-center justify-center space-x-2 text-sm">
+            <span className="text-gray-600 font-medium">crafted by</span>
+            <span 
+              className="text-gray-400 font-bold tracking-wide hover:text-orange-400 transition-colors duration-300 cursor-pointer"
+              style={{ fontFamily: '"Rajdhani", sans-serif' }}
+            >
+              @ebucheese
+            </span>
           </div>
         </div>
       </div>
