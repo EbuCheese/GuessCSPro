@@ -318,7 +318,7 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
     setError(null);
   };
 
-  return (
+return (
     <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
       {/* CS2 Background */}
       <div 
@@ -394,14 +394,25 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
                     : 'linear-gradient(to right, transparent, #FF6B35, transparent)'
                 }}
               ></div>
-              <div 
-                className="text-xl"
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 256 256"
+                className="w-6 h-6"
                 style={{
-                  color: gameMode === 'free-for-all' ? '#8E44AD' : '#FF6B35'
+                  fill: gameMode === 'free-for-all' ? '#8E44AD' : '#FF6B35',
                 }}
               >
-                ⚡
-              </div>
+                <rect width="256" height="256" fill="none" />
+                <path
+                  d={
+                    gameMode === 'free-for-all'
+                      ? 'M239.75,90.81c0,.11,0,.21-.07.32L217,195a16,16,0,0,1-15.72,13H54.71A16,16,0,0,1,39,195L16.32,91.13c0-.11-.05-.21-.07-.32A16,16,0,0,1,44,77.39l33.67,36.29,35.8-80.29a1,1,0,0,0,0-.1,16,16,0,0,1,29.06,0,1,1,0,0,0,0,.1l35.8,80.29L212,77.39a16,16,0,0,1,27.71,13.42Z'
+                      : 'M120,72a8,8,0,1,1,8,8A8,8,0,0,1,120,72Zm24,64a8,8,0,1,0,8-8A8,8,0,0,0,144,136Zm48.5,35.47A88.32,88.32,0,0,0,224,101.89q0-1.1-.09-2.19a4,4,0,0,0-4-3.75H195.75L172.62,123.7a24,24,0,1,1-12.28-10.25l25.51-30.62A8,8,0,0,1,192,80h23.14a4,4,0,0,0,3.77-5.35C207.27,42,176.86,18,140.74,16.08l-.59,0a4,4,0,0,0-4.15,4V49.33a24,24,0,1,1-16,0v-27a4,4,0,0,0-4.89-3.91A88.16,88.16,0,0,0,48,102L25.55,145.14l-.22.45a16,16,0,0,0,7.51,20.7l.25.12L56,176.9v31a16,16,0,0,0,16,16h40v8a8,8,0,0,0,8,8h71.77a8.42,8.42,0,0,0,4.06-1,8,8,0,0,0,4.11-8Z'
+                  }
+                />
+              </svg>
+
+
               <div 
                 className="h-px bg-gradient-to-r from-transparent to-transparent w-32"
                 style={{
@@ -416,9 +427,9 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
 
         {!gameStarted ? (
         <div className="w-full max-w-4xl">
-          {/* Challenge Rules Header - Now more compact but still detailed */}
+          {/* Challenge Rules Header - Enhanced with animations */}
           <div 
-            className="p-6 rounded-xl border-2 text-center mb-8 relative overflow-hidden"
+            className="p-6 rounded-xl border-2 text-center mb-8 relative overflow-hidden group"
             style={{
               background: gameMode === 'free-for-all' 
                 ? 'linear-gradient(135deg, rgba(142, 68, 173, 0.1) 0%, rgba(52, 152, 219, 0.08) 50%, rgba(26, 31, 46, 0.95) 100%)'
@@ -438,9 +449,21 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
                   : '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
             }}
           >
+            {/* Animated background glow */}
+            <div 
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+              style={{
+                background: gameMode === 'free-for-all'
+                  ? 'radial-gradient(circle at 50% 50%, rgba(142, 68, 173, 0.1) 0%, transparent 70%)'
+                  : gameMode === 'headshot'
+                    ? 'radial-gradient(circle at 50% 50%, rgba(255, 107, 53, 0.1) 0%, transparent 70%)'
+                    : 'radial-gradient(circle at 50% 50%, rgba(107, 114, 128, 0.1) 0%, transparent 70%)'
+              }}
+            />
+            
             <div className="relative z-10">
               <h3 
-                className="text-lg md:text-xl font-black mb-4 tracking-wide"
+                className="text-lg md:text-xl font-black mb-4 tracking-wide group-hover:scale-105 transition-transform duration-300"
                 style={{ 
                   fontFamily: '"Rajdhani", sans-serif',
                   background: gameMode === 'free-for-all'
@@ -458,7 +481,7 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
               
               {/* Horizontal rules layout for better balance */}
               <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 group-hover:scale-105 transition-transform duration-300">
                   <span 
                     className="text-xl"
                     style={{
@@ -480,7 +503,7 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
                 
                 <div className="text-gray-500">•</div>
                 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 group-hover:scale-105 transition-transform duration-300">
                   <span 
                     className="text-xl"
                     style={{
@@ -502,7 +525,7 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
                 
                 <div className="text-gray-500">•</div>
                 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 group-hover:scale-105 transition-transform duration-300">
                   <span className="text-xl text-green-400">💯</span>
                   <span 
                     className="font-bold text-lg text-green-400"
@@ -514,7 +537,7 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
                 
                 <div className="text-gray-500">•</div>
                 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 group-hover:scale-105 transition-transform duration-300">
                   <span className="text-xl text-red-400">❌</span>
                   <span 
                     className="font-bold text-lg text-red-400"
@@ -527,22 +550,31 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
             </div>
           </div>
 
-          {/* Mode Selection - Enhanced with more content to match rules height */}
+          {/* Mode Selection - Enhanced with better animations */}
           <div className={`grid gap-8 w-full ${!initialGameMode ? 'grid-cols-1 lg:grid-cols-2' : 'max-w-lg mx-auto'}`}>
             {/* Headshot Mode */}
             {(!initialGameMode || initialGameMode === 'headshot') && (
               <div 
-                className="p-8 rounded-xl border-2 border-gray-700 hover:border-orange-500 transition-all duration-300 group relative overflow-hidden"
+                className="p-8 rounded-xl border-2 border-gray-700 hover:border-orange-500 transition-all duration-500 group relative overflow-hidden cursor-pointer"
                 style={{
                   background: 'linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(243, 156, 18, 0.03) 30%, rgba(20, 25, 40, 0.95) 100%)',
                   backdropFilter: 'blur(15px)',
                   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-                  minHeight: '480px'
+                  minHeight: '480px',
+                  transform: 'translateY(0)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.boxShadow = '0 20px 40px rgba(255, 107, 53, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
                 }}
               >
                 {/* Subtle background pattern */}
                 <div 
-                  className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity duration-300"
+                  className="absolute inset-0 opacity-10 group-hover:opacity-30 transition-opacity duration-500"
                   style={{
                     background: 'radial-gradient(circle at 30% 20%, rgba(255, 107, 53, 0.1) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(243, 156, 18, 0.08) 0%, transparent 50%)'
                   }}
@@ -551,22 +583,22 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
                 <div className="relative z-10 h-full flex flex-col">
                   {/* Icon and Title */}
                   <div className="text-center mb-6">
-                    <div className="text-7xl mb-4 group-hover:scale-110 transition-transform duration-300">🎯</div>
+                    <div className="text-7xl mb-4 group-hover:scale-110 transition-transform duration-500">🎯</div>
                     <h4 
-                      className="text-3xl md:text-4xl font-black mb-3 text-orange-400 group-hover:text-orange-300 transition-colors"
+                      className="text-3xl md:text-4xl font-black mb-3 text-orange-400 group-hover:text-orange-300 transition-colors duration-300"
                       style={{ fontFamily: '"Rajdhani", sans-serif', letterSpacing: '0.1em' }}
                     >
                       HEADSHOT MODE
                     </h4>
                     <div 
-                      className="h-1 w-20 mx-auto rounded-full bg-gradient-to-r from-orange-500 to-yellow-500 group-hover:w-32 transition-all duration-300"
+                      className="h-1 w-20 mx-auto rounded-full bg-gradient-to-r from-orange-500 to-yellow-500 group-hover:w-32 transition-all duration-500"
                     />
                   </div>
                   
                   {/* Description */}
                   <div className="flex-1 flex flex-col justify-center">
                     <p 
-                      className="text-gray-300 text-center leading-relaxed text-base md:text-lg mb-6"
+                      className="text-gray-300 text-center leading-relaxed text-base md:text-lg mb-6 group-hover:text-gray-200 transition-colors duration-300"
                       style={{ fontFamily: '"Inter", sans-serif' }}
                     >
                       Identify players from their close-up headshot photos. Perfect for testing your knowledge of pro player faces and recognition skills.
@@ -574,15 +606,15 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
                     
                     {/* Features list */}
                     <div className="space-y-3 mb-6">
-                      <div className="flex items-center justify-center text-sm text-gray-400">
+                      <div className="flex items-center justify-center text-sm text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
                         <span className="text-orange-400 mr-2">✓</span>
                         <span style={{ fontFamily: '"Inter", sans-serif' }}>Clean headshot photos</span>
                       </div>
-                      <div className="flex items-center justify-center text-sm text-gray-400">
+                      <div className="flex items-center justify-center text-sm text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
                         <span className="text-orange-400 mr-2">✓</span>
                         <span style={{ fontFamily: '"Inter", sans-serif' }}>Focus on facial recognition</span>
                       </div>
-                      <div className="flex items-center justify-center text-sm text-gray-400">
+                      <div className="flex items-center justify-center text-sm text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
                         <span className="text-orange-400 mr-2">✓</span>
                         <span style={{ fontFamily: '"Inter", sans-serif' }}>Great for beginners</span>
                       </div>
@@ -610,17 +642,26 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
             {/* Free-for-All Mode */}
             {(!initialGameMode || initialGameMode === 'free-for-all') && (
               <div 
-                className="p-8 rounded-xl border-2 border-gray-700 hover:border-purple-500 transition-all duration-300 group relative overflow-hidden"
+                className="p-8 rounded-xl border-2 border-gray-700 hover:border-purple-500 transition-all duration-500 group relative overflow-hidden cursor-pointer"
                 style={{
                   background: 'linear-gradient(135deg, rgba(142, 68, 173, 0.05) 0%, rgba(52, 152, 219, 0.03) 30%, rgba(20, 25, 40, 0.95) 100%)',
                   backdropFilter: 'blur(15px)',
                   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-                  minHeight: '480px'
+                  minHeight: '480px',
+                  transform: 'translateY(0)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.boxShadow = '0 20px 40px rgba(142, 68, 173, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
                 }}
               >
                 {/* Subtle background pattern */}
                 <div 
-                  className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity duration-300"
+                  className="absolute inset-0 opacity-10 group-hover:opacity-30 transition-opacity duration-500"
                   style={{
                     background: 'radial-gradient(circle at 30% 20%, rgba(142, 68, 173, 0.1) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(52, 152, 219, 0.08) 0%, transparent 50%)'
                   }}
@@ -629,22 +670,22 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
                 <div className="relative z-10 h-full flex flex-col">
                   {/* Icon and Title */}
                   <div className="text-center mb-6">
-                    <div className="text-7xl mb-4 group-hover:scale-110 transition-transform duration-300">🎲</div>
+                    <div className="text-7xl mb-4 group-hover:scale-110 transition-transform duration-500">🎲</div>
                     <h4 
-                      className="text-3xl md:text-4xl font-black mb-3 text-purple-400 group-hover:text-purple-300 transition-colors"
+                      className="text-3xl md:text-4xl font-black mb-3 text-purple-400 group-hover:text-purple-300 transition-colors duration-300"
                       style={{ fontFamily: '"Rajdhani", sans-serif', letterSpacing: '0.1em' }}
                     >
                       FREE-FOR-ALL MODE
                     </h4>
                     <div 
-                      className="h-1 w-20 mx-auto rounded-full bg-gradient-to-r from-purple-500 to-blue-500 group-hover:w-32 transition-all duration-300"
+                      className="h-1 w-20 mx-auto rounded-full bg-gradient-to-r from-purple-500 to-blue-500 group-hover:w-32 transition-all duration-500"
                     />
                   </div>
                   
                   {/* Description */}
                   <div className="flex-1 flex flex-col justify-center">
                     <p 
-                      className="text-gray-300 text-center leading-relaxed text-base md:text-lg mb-6"
+                      className="text-gray-300 text-center leading-relaxed text-base md:text-lg mb-6 group-hover:text-gray-200 transition-colors duration-300"
                       style={{ fontFamily: '"Inter", sans-serif' }}
                     >
                       Random images from tournaments, streams, and events. More challenging with varied angles, contexts, and situations.
@@ -652,17 +693,17 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
                     
                     {/* Features list */}
                     <div className="space-y-3 mb-6">
-                      <div className="flex items-center justify-center text-sm text-gray-400">
+                      <div className="flex items-center justify-center text-sm text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
                         <span className="text-purple-400 mr-2">✓</span>
                         <span style={{ fontFamily: '"Inter", sans-serif' }}>Tournament & event photos</span>
                       </div>
-                      <div className="flex items-center justify-center text-sm text-gray-400">
+                      <div className="flex items-center justify-center text-sm text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
                         <span className="text-purple-400 mr-2">✓</span>
                         <span style={{ fontFamily: '"Inter", sans-serif' }}>Various angles & contexts</span>
                       </div>
-                      <div className="flex items-center justify-center text-sm text-gray-400">
+                      <div className="flex items-center justify-center text-sm text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
                         <span className="text-purple-400 mr-2">✓</span>
-                        <span style={{ fontFamily: '"Inter", sans-serif' }}>Expert difficulty</span>
+                        <span style={{ fontFamily: '"Inter", sans-serif' }}>Harder difficulty</span>
                       </div>
                     </div>
                   </div>
@@ -687,16 +728,32 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
           </div>
         </div>
         ) : gameComplete ? (
-          /* Game Complete Screen - Centered with top margin to align with back button */
-          <div className="flex flex-col items-center w-full max-w-4xl justify-center mt-20">
+  /* Game Complete Screen - Fixed button interaction */
+        <div className="flex flex-col items-center w-full max-w-4xl justify-center relative z-20">
+          <div 
+            className="p-8 rounded-xl border-2 w-full relative overflow-hidden group"
+            style={{
+              background: gameMode === 'free-for-all'
+                ? 'linear-gradient(135deg, rgba(142, 68, 173, 0.1) 0%, rgba(52, 152, 219, 0.08) 50%, rgba(26, 31, 46, 0.95) 100%)'
+                : 'linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(243, 156, 18, 0.08) 50%, rgba(26, 31, 46, 0.95) 100%)',
+              borderColor: gameMode === 'free-for-all' ? 'rgba(142, 68, 173, 0.4)' : 'rgba(255, 107, 53, 0.4)',
+              backdropFilter: 'blur(15px)',
+              boxShadow: gameMode === 'free-for-all'
+                ? '0 8px 32px rgba(142, 68, 173, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+                : '0 8px 32px rgba(255, 107, 53, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+            }}
+          >
+            {/* Animated background */}
             <div 
-              className="p-8 rounded-lg border border-gray-700 w-full"
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
               style={{
-                background: 'linear-gradient(135deg, rgba(26, 31, 46, 0.9) 0%, rgba(45, 55, 72, 0.7) 100%)',
-                backdropFilter: 'blur(10px)',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+                background: gameMode === 'free-for-all'
+                  ? 'radial-gradient(circle at 50% 50%, rgba(142, 68, 173, 0.1) 0%, transparent 70%)'
+                  : 'radial-gradient(circle at 50% 50%, rgba(255, 107, 53, 0.1) 0%, transparent 70%)'
               }}
-            >
+            />
+
+            <div className="relative z-10">
               {/* Game Mode Title */}
               <h2 
                 className="text-5xl font-black mb-4 text-center"
@@ -785,30 +842,37 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
                 ))}
               </div>
               
-              <div className="text-center space-x-4">
+              {/* Fixed button container */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-30">
                 <button
                   onClick={handleRestartGame}
-                  className="px-8 py-4 font-bold text-lg rounded-lg transition-all duration-300 transform hover:scale-105"
+                  className="px-8 py-4 font-bold text-lg rounded-lg transition-all duration-300 transform hover:scale-105 cursor-pointer relative z-40"
                   style={{
                     background: 'linear-gradient(45deg, #10B981, #059669)',
                     color: '#fff',
                     fontFamily: '"Rajdhani", sans-serif',
                     letterSpacing: '0.1em',
-                    boxShadow: '0 4px 15px rgba(16, 185, 129, 0.3)'
+                    boxShadow: '0 4px 15px rgba(16, 185, 129, 0.3)',
+                    pointerEvents: 'auto'
                   }}
                 >
                   PLAY AGAIN
                 </button>
                 <button
                   onClick={onBackToHome}
-                  className="px-8 py-4 bg-gray-600 hover:bg-gray-500 text-white font-bold text-lg rounded-lg transition-all"
-                  style={{ fontFamily: '"Rajdhani", sans-serif', letterSpacing: '0.1em' }}
+                  className="px-8 py-4 bg-gray-600 hover:bg-gray-500 text-white font-bold text-lg rounded-lg transition-all cursor-pointer relative z-40"
+                  style={{ 
+                    fontFamily: '"Rajdhani", sans-serif', 
+                    letterSpacing: '0.1em',
+                    pointerEvents: 'auto'
+                  }}
                 >
                   BACK TO HOME
                 </button>
               </div>
             </div>
           </div>
+        </div>
         ) : showRoundSummary ? (
           /* Round Summary Screen */
           <div className="flex flex-col items-center w-full max-w-lg mx-auto justify-center">
