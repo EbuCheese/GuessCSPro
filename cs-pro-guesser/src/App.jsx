@@ -10,6 +10,23 @@ function App() {
     setMode(null);
   };
 
+  const comingSoonStyles = {
+    quotes: {
+      color: '#45B7D1',
+      gradient: 'linear-gradient(45deg, #45B7D1, #21849B)'
+    },
+    hardcore: {
+      color: '#f52a2a',
+      gradient: 'linear-gradient(45deg, #f52a2a, #9e1e1e)'
+    },
+    default: {
+      color: '#FFA500',
+      gradient: 'linear-gradient(45deg, #FF6B35, #F39C12)'
+    }
+};
+
+  const currentStyle = comingSoonStyles[mode] || comingSoonStyles.default;
+
   if (!mode) {
     return <HomePage onSelectMode={setMode} />;
   }
@@ -45,11 +62,14 @@ function App() {
             >
               <div className="text-6xl mb-6">🚧</div>
               <h3 
-                className="text-2xl font-bold mb-4 text-orange-400"
-                style={{ fontFamily: '"Rajdhani", sans-serif' }}
-              >
-                COMING SOON
-              </h3>
+              className="text-2xl font-bold mb-4"
+              style={{ 
+                color: currentStyle.color,
+                fontFamily: '"Rajdhani", sans-serif' 
+              }}
+            >
+              COMING SOON
+            </h3>
               <p 
                 className="text-gray-300 mb-6"
                 style={{ fontFamily: '"Inter", sans-serif' }}
@@ -60,11 +80,11 @@ function App() {
                 onClick={handleBackToHome}
                 className="px-8 py-4 font-bold text-lg rounded-lg transition-all duration-300 transform hover:scale-105"
                 style={{
-                  background: 'linear-gradient(45deg, #FF6B35, #F39C12)',
+                  background: currentStyle.gradient,
                   color: '#000',
+                  boxShadow: `0 4px 15px ${currentStyle.color}66`,
                   fontFamily: '"Rajdhani", sans-serif',
                   letterSpacing: '0.1em',
-                  boxShadow: '0 4px 15px rgba(255, 107, 53, 0.3)'
                 }}
               >
                 BACK TO HOME
