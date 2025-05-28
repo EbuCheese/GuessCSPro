@@ -35,6 +35,24 @@ export default function HomePage({ onSelectMode }) {
     },
   ];
 
+  // change the crosshair color based on hovered game
+  const getCursorUrl = (modeId) => {
+  switch (modeId) {
+    case 'headshot':
+      return '/crosshair-orange-hover.png';
+    case 'free-for-all':
+      return '/crosshair-purple-hover.png';
+    case 'quotes':
+      return '/crosshair-blue-hover.png';
+    case 'hardcore':
+      return '/crosshair-red-hover.png';
+    default:
+      return '/crosshair-white.png'; // default crosshair
+  }
+};
+
+
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
       {/* CS2 Background */}
@@ -139,9 +157,11 @@ export default function HomePage({ onSelectMode }) {
                 boxShadow: hoveredMode === mode.id 
                   ? `0 0 30px ${mode.color}40, inset 0 0 20px rgba(0, 0, 0, 0.3)`
                   : '0 4px 15px rgba(0, 0, 0, 0.3), inset 0 0 10px rgba(0, 0, 0, 0.2)',
-                backdropFilter: 'blur(10px)'
+                backdropFilter: 'blur(10px)',
+                cursor: `url(${getCursorUrl(mode.id)}) 16 16, crosshair`
               }}
             >
+
               {/* Animated background effect */}
               <div 
                 className={`absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-300`}
@@ -221,13 +241,20 @@ export default function HomePage({ onSelectMode }) {
           
           <div className="flex items-center justify-center space-x-2 text-sm">
             <span className="text-gray-600 font-medium">crafted by</span>
-            <span 
-              className="text-gray-400 font-bold tracking-wide hover:text-orange-400 transition-colors duration-300 cursor-pointer"
-              style={{ fontFamily: '"Rajdhani", sans-serif' }}
+            <a
+              href="https://twitter.com/ebucheese"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-400 font-bold tracking-wide hover:text-orange-400 transition-colors duration-300"
+              style={{
+                fontFamily: '"Rajdhani", sans-serif',
+                cursor: 'url(/crosshair-orange-hover.png) 16 16, crosshair',
+              }}
             >
               @ebucheese
-            </span>
+            </a>
           </div>
+
         </div>
       </div>
 

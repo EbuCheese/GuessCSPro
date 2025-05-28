@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import ImageReveal from './ImageReveal';
 
 export default function ImageGames({ onBackToHome, initialGameMode  }) {
@@ -22,6 +22,10 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
   const [totalScore, setTotalScore] = useState(0);
   const [usedPlayerIds, setUsedPlayerIds] = useState([]);
   const [roundResults, setRoundResults] = useState([]);
+
+  // Hide Cursor
+  const [showCursor, setShowCursor] = useState(false);
+  const cursorTimeoutRef = useRef(null);
 
   const timerRef = useRef(null);
   const gameTimerRef = useRef(null);
@@ -48,6 +52,69 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
       .replace(/7/g, 't')  // Replace 7 with t
       .trim();
   };
+
+  // Change crosshair color based on gamemode
+  const getCursorUrl = (modeId) => {
+  switch (modeId) {
+    case 'headshot':
+      return '/crosshair-orange-hover.png';
+    case 'free-for-all':
+      return '/crosshair-purple-hover.png';
+    case 'quotes':
+      return '/crosshair-blue.png';
+    case 'hardcore':
+      return '/crosshair-red.png';
+    
+  }
+};
+
+const preloadCursorImages = () => {
+  const cursorImages = [
+    '/crosshair-orange.png',
+    '/crosshair-orange-hover.png', 
+    '/crosshair-purple.png',
+    '/crosshair-purple-hover.png',
+    '/crosshair-blue.png',
+    '/crosshair-red.png'
+  ];
+
+  cursorImages.forEach(src => {
+    const img = new Image();
+    img.src = src;
+  });
+};
+
+useEffect(() => {
+  // Preload cursor images when component mounts
+  preloadCursorImages();
+}, []);
+
+
+// logic for hiding / showing cursor
+const handleMouseMove = useCallback(() => {
+  if (gameStarted && !showRoundSummary && !gameComplete) {
+    setShowCursor(true);
+
+    // Clear any existing timeout
+    if (cursorTimeoutRef.current) {
+      clearTimeout(cursorTimeoutRef.current);
+    }
+
+    // Set a new timeout
+    cursorTimeoutRef.current = setTimeout(() => {
+      setShowCursor(false);
+    }, 2000);
+  }
+}, [gameStarted, showRoundSummary, gameComplete]);
+
+useEffect(() => {
+  return () => {
+    if (cursorTimeoutRef.current) {
+      clearTimeout(cursorTimeoutRef.current);
+    }
+  };
+}, []);
+
 
   // Enhanced answer checking function
   const checkAnswer = (userAnswer, correctName) => {
@@ -319,7 +386,18 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
   };
 
 return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+  // main container and crosshair color for gamemode
+  <div 
+  className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
+  style={{
+    cursor: gameStarted && !showRoundSummary && !gameComplete 
+      ? (showCursor 
+          ? `url(${gameMode === 'headshot' ? '/crosshair-orange.png' : '/crosshair-purple.png'}) 16 16, crosshair`
+          : 'none')
+      : `url(${gameMode === 'headshot' ? '/crosshair-orange.png' : '/crosshair-purple.png'}) 16 16, crosshair`
+  }}
+  onMouseMove={handleMouseMove}
+>
       {/* CS2 Background */}
       <div 
         className="absolute inset-0 z-0"
@@ -340,6 +418,9 @@ return (
             ? 'hover:border-purple-500 hover:bg-gray-700/80' 
             : 'hover:border-orange-500 hover:bg-gray-700/80'
         }`}
+        style={{
+          cursor: `url(${getCursorUrl(gameMode)}) 16 16, crosshair`
+        }}
       >
         <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 text-gray-400 transition-colors ${
           gameMode === 'free-for-all' 
@@ -562,6 +643,7 @@ return (
                   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                   minHeight: '480px',
                   transform: 'translateY(0)',
+                  cursor: `url(${gameMode === 'headshot' ? '/crosshair-orange.png' : '/crosshair-purple.png'}) 16 16, crosshair`
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-8px)';
@@ -630,7 +712,8 @@ return (
                       color: '#000',
                       fontFamily: '"Rajdhani", sans-serif',
                       letterSpacing: '0.1em',
-                      boxShadow: '0 4px 15px rgba(255, 107, 53, 0.3)'
+                      boxShadow: '0 4px 15px rgba(255, 107, 53, 0.3)',
+                      cursor: `url(${getCursorUrl('headshot')}) 16 16, crosshair`
                     }}
                   >
                     START HEADSHOT MODE
@@ -649,6 +732,7 @@ return (
                   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                   minHeight: '480px',
                   transform: 'translateY(0)',
+                  cursor: `url(${gameMode === 'headshot' ? '/crosshair-orange.png' : '/crosshair-purple.png'}) 16 16, crosshair`
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-8px)';
@@ -717,7 +801,8 @@ return (
                       color: '#fff',
                       fontFamily: '"Rajdhani", sans-serif',
                       letterSpacing: '0.1em',
-                      boxShadow: '0 4px 15px rgba(142, 68, 173, 0.3)'
+                      boxShadow: '0 4px 15px rgba(142, 68, 173, 0.3)',
+                      cursor: `url(${getCursorUrl('free-for-all')}) 16 16, crosshair`
                     }}
                   >
                     START FREE-FOR-ALL
@@ -728,7 +813,7 @@ return (
           </div>
         </div>
         ) : gameComplete ? (
-  /* Game Complete Screen - Fixed button interaction */
+        /* Game Complete Screen - Fixed button interaction */
         <div className="flex flex-col items-center w-full max-w-4xl justify-center relative z-20">
           <div 
             className="p-8 rounded-xl border-2 w-full relative overflow-hidden group"
@@ -853,7 +938,8 @@ return (
                     fontFamily: '"Rajdhani", sans-serif',
                     letterSpacing: '0.1em',
                     boxShadow: '0 4px 15px rgba(16, 185, 129, 0.3)',
-                    pointerEvents: 'auto'
+                    pointerEvents: 'auto',
+                    cursor: `url(${getCursorUrl(gameMode)}) 16 16, crosshair`
                   }}
                 >
                   PLAY AGAIN
@@ -864,7 +950,8 @@ return (
                   style={{ 
                     fontFamily: '"Rajdhani", sans-serif', 
                     letterSpacing: '0.1em',
-                    pointerEvents: 'auto'
+                    pointerEvents: 'auto',
+                    cursor: `url(${getCursorUrl(gameMode)}) 16 16, crosshair`
                   }}
                 >
                   BACK TO HOME
@@ -932,7 +1019,8 @@ return (
                   color: '#fff',
                   fontFamily: '"Rajdhani", sans-serif',
                   letterSpacing: '0.1em',
-                  boxShadow: '0 4px 15px rgba(59, 130, 246, 0.3)'
+                  boxShadow: '0 4px 15px rgba(59, 130, 246, 0.3)',
+                  cursor: `url(${getCursorUrl(gameMode)}) 16 16, crosshair`
                 }}
               >
                 {currentRound >= maxRounds ? 'VIEW FINAL RESULTS' : 'NEXT ROUND'}
@@ -1080,7 +1168,7 @@ return (
                   style={{
                     background: 'linear-gradient(135deg, rgba(20, 25, 40, 0.8) 0%, rgba(35, 40, 55, 0.6) 100%)',
                     backdropFilter: 'blur(5px)',
-                    fontFamily: '"Inter", sans-serif'
+                    fontFamily: '"Inter", sans-serif',
                   }}
                   disabled={hasGuessed || !currentPlayer || !imageLoaded || loading}
                   autoComplete="off"
@@ -1096,13 +1184,14 @@ return (
                     color: '#fff',
                     fontFamily: '"Rajdhani", sans-serif',
                     letterSpacing: '0.1em',
+                    cursor: `url(${getCursorUrl(gameMode)}) 16 16, crosshair`,
                     boxShadow: hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading 
                       ? 'none' 
                       : '0 4px 15px rgba(59, 130, 246, 0.3)'
                   }}
                   disabled={hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading}
                 >
-                  SUBMIT
+                  SUBMIT <span className="text-sm text-gray-300">(Enter)</span>
                 </button>
               </form>
             </div>

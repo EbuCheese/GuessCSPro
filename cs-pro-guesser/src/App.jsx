@@ -29,7 +29,8 @@ function App() {
           <div 
             className="absolute inset-0 z-0"
             style={{
-              background: 'linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 50%, #0a0e1a 100%)'
+              background: 'linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 50%, #0a0e1a 100%)',
+              cursor: 'url(/crosshair.png) 16 16 crosshair' 
             }}
           />
           
