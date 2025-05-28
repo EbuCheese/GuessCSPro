@@ -75,7 +75,11 @@ const preloadCursorImages = () => {
     '/crosshair-purple.png',
     '/crosshair-purple-hover.png',
     '/crosshair-blue.png',
-    '/crosshair-red.png'
+    '/crosshair-red.png',
+    'cursor-text-blue.png',
+    'cursor-text-orange.png',
+    'cursor-text-purple.png',
+    'cursor-text-red.png',
   ];
 
   cursorImages.forEach(src => {
@@ -1169,6 +1173,7 @@ return (
                     background: 'linear-gradient(135deg, rgba(20, 25, 40, 0.8) 0%, rgba(35, 40, 55, 0.6) 100%)',
                     backdropFilter: 'blur(5px)',
                     fontFamily: '"Inter", sans-serif',
+                    cursor: `url(${gameMode === 'headshot' ? '/cursor-text-orange.png' : '/cursor-text-purple.png'}) 10 10, text`
                   }}
                   disabled={hasGuessed || !currentPlayer || !imageLoaded || loading}
                   autoComplete="off"
