@@ -41,13 +41,17 @@ function App() {
       )}
      
       {mode !== 'headshot' && mode !== 'free-for-all' && (
-        <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+        <div className="min-h-screen flex items-center justify-center relative overflow-hidden"
+        style={{
+          cursor: `url(${mode === 'quotes' ? '/crosshair-blue.png' : '/crosshair-red.png'}) 16 16, crosshair`
+        }}
+        >
+          
           {/* Background */}
           <div 
             className="absolute inset-0 z-0"
             style={{
               background: 'linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 50%, #0a0e1a 100%)',
-              cursor: 'url(/crosshair.png) 16 16 crosshair' 
             }}
           />
           
@@ -65,7 +69,7 @@ function App() {
               className="text-2xl font-bold mb-4"
               style={{ 
                 color: currentStyle.color,
-                fontFamily: '"Rajdhani", sans-serif' 
+                fontFamily: '"Rajdhani", sans-serif',
               }}
             >
               COMING SOON
@@ -85,6 +89,7 @@ function App() {
                   boxShadow: `0 4px 15px ${currentStyle.color}66`,
                   fontFamily: '"Rajdhani", sans-serif',
                   letterSpacing: '0.1em',
+                  cursor: `url(${mode === 'quotes' ? '/crosshair-blue-hover.png' : '/crosshair-red-hover.png'}) 16 16, crosshair`
                 }}
               >
                 BACK TO HOME
