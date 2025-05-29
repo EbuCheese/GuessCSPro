@@ -1151,6 +1151,7 @@ return (
                   }
                   totalBlocks={25} 
                   interval={1200}
+                  gameMode={gameMode}
                   key={`${currentPlayer.id}-${gameMode}-${currentImageUrl || 'headshot'}`}
                   onImageLoaded={setImageLoaded}
                 />

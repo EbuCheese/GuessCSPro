@@ -4,7 +4,8 @@ export default function ImageReveal({
   src = "/api/placeholder/400/400",
   revealSteps = 25,
   interval = 1200,
-  onImageLoaded
+  onImageLoaded,
+  gameMode = 'headshot'
 }) {
   // State to track which blocks have been revealed
   const [revealedBlocks, setRevealedBlocks] = useState([]);
@@ -13,6 +14,34 @@ export default function ImageReveal({
   // Grid dimensions (5x5 grid = 25 blocks)
   const gridSize = 5;
   const totalCells = gridSize * gridSize;
+
+  // Color themes based on game mode
+  const themes = {
+    headshot: {
+      border: 'border-orange-500',
+      shadow: 'rgba(255, 165, 0, 0.3)',
+      accent: 'bg-orange-500',
+      accentHover: 'rgba(255, 165, 0, 0.1)',
+      progressGradient: 'from-orange-500 via-yellow-500 to-orange-600',
+      progressShadow: 'rgba(255, 165, 0, 0.8)',
+      textPrimary: 'text-orange-400',
+      textSecondary: 'text-gray-400',
+      spinnerBorder: 'border-orange-500'
+    },
+    'free-for-all': {
+      border: 'border-purple-500',
+      shadow: 'rgba(142, 68, 173, 0.3)',
+      accent: 'bg-purple-500',
+      accentHover: 'rgba(142, 68, 173, 0.1)',
+      progressGradient: 'from-purple-500 via-blue-500 to-purple-600',
+      progressShadow: 'rgba(142, 68, 173, 0.8)',
+      textPrimary: 'text-purple-400',
+      textSecondary: 'text-gray-400',
+      spinnerBorder: 'border-purple-500'
+    }
+  };
+
+  const currentTheme = themes[gameMode] || themes.headshot;
 
   // Preload image to prevent loading delays
   useEffect(() => {
@@ -97,14 +126,14 @@ export default function ImageReveal({
       <div className="w-80 h-80 relative">
         {/* Grid Container with CS2 styling */}
         <div
-          className="w-full h-full border-4 border-orange-500 overflow-hidden rounded-lg shadow-2xl"
+          className={`w-full h-full border-4 ${currentTheme.border} overflow-hidden rounded-lg shadow-2xl`}
           style={{
             display: 'grid',
             gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
             gridTemplateRows: `repeat(${gridSize}, 1fr)`,
             gap: '0',
             backgroundColor: '#1a1a1a',
-            boxShadow: '0 0 30px rgba(255, 165, 0, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.8)'
+            boxShadow: '0 0 30px ${currentTheme.shadow}, inset 0 0 20px rgba(0, 0, 0, 0.8)'
           }}
         >
           {/* Dynamically create grid cells */}
@@ -124,7 +153,7 @@ export default function ImageReveal({
                 style={{
                   boxShadow: isRevealed 
                     ? 'inset 0 2px 4px rgba(0, 0, 0, 0.8)' 
-                    : '0 2px 4px rgba(255, 165, 0, 0.1)'
+                    : '0 2px 4px ${currentTheme.accentHover}'
                 }}
               >
                 {isRevealed && imageLoaded && (
@@ -140,12 +169,12 @@ export default function ImageReveal({
                 )}
                 {!isRevealed && (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-2 h-2 bg-orange-500 rounded-full opacity-20 animate-pulse"></div>
+                    <div className={`w-2 h-2 ${currentTheme.accent} rounded-full opacity-20 animate-pulse`}></div>
                   </div>
                 )}
                 {isRevealed && !imageLoaded && (
                   <div className="absolute inset-0 flex items-center justify-center bg-gray-700">
-                    <div className="w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                    <div className={`w-4 h-4 border-2 ${currentTheme.spinnerBorder} border-t-transparent rounded-full animate-spin`}></div>
                   </div>
                 )}
               </div>
@@ -157,7 +186,7 @@ export default function ImageReveal({
         {!imageLoaded && (
           <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
             <div className="text-white text-center">
-              <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+              <div className={`w-8 h-8 border-4 ${currentTheme.spinnerBorder} border-t-transparent rounded-full animate-spin mx-auto mb-2`}></div>
               <div className="text-sm">Loading image...</div>
             </div>
           </div>
@@ -168,29 +197,29 @@ export default function ImageReveal({
       <div className="w-80 relative">
         <div className="h-4 bg-gradient-to-r from-gray-900 to-gray-800 rounded-lg overflow-hidden border-2 border-gray-700 shadow-inner">
           <div
-            className="h-full bg-gradient-to-r from-orange-500 via-yellow-500 to-orange-600 transition-all duration-500 shadow-lg"
+            className={`h-full bg-gradient-to-r ${currentTheme.progressGradient} transition-all duration-500 shadow-lg`}
             style={{ 
               width: `${progressPercent}%`,
-              boxShadow: '0 0 10px rgba(255, 165, 0, 0.8)'
+              boxShadow: `0 0 10px ${currentTheme.progressShadow}`
             }}
           ></div>
         </div>
         
         {/* HUD-style labels */}
         <div className="flex justify-between mt-2 text-xs">
-          <span className="text-orange-400 font-mono font-bold">REVEAL</span>
-          <span className="text-gray-400 font-mono">{Math.round(progressPercent)}%</span>
-          <span className="text-orange-400 font-mono font-bold">COMPLETE</span>
+          <span className={`${currentTheme.textPrimary} font-mono font-bold`}>REVEAL</span>
+          <span className={`${currentTheme.textSecondary} font-mono`}>{Math.round(progressPercent)}%</span>
+          <span className={`${currentTheme.textPrimary} font-mono font-bold`}>COMPLETE</span>
         </div>
       </div>
      
       {/* CS2 HUD-style Stats */}
-      <div className="bg-gradient-to-r from-gray-900 to-gray-800 border-2 border-orange-500 rounded-lg px-4 py-2 shadow-lg">
+      <div className={`bg-gradient-to-r from-gray-900 to-gray-800 border-2 ${currentTheme.border} rounded-lg px-4 py-2 shadow-lg`}>
         <div className="text-center">
-          <div className="text-orange-400 font-mono text-lg font-bold">
+          <div className={`${currentTheme.textPrimary} font-mono text-lg font-bold`}>
             {revealedBlocks.length} / {Math.min(revealSteps, totalCells)}
           </div>
-          <div className="text-gray-400 font-mono text-xs uppercase tracking-wide">
+          <div className={`${currentTheme.textSecondary} font-mono text-xs uppercase tracking-wide`}>
             Blocks Revealed
           </div>
         </div>
