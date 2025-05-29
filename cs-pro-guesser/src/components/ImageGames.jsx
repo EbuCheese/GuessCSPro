@@ -2,36 +2,45 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import ImageReveal from './ImageReveal';
 
 export default function ImageGames({ onBackToHome, initialGameMode  }) {
+  // Game Start-End
   const [gameMode, setGameMode] = useState(initialGameMode || null);
   const [gameStarted, setGameStarted] = useState(false);
+  const [gameComplete, setGameComplete] = useState(false);
+
+  // Answer States
   const [answer, setAnswer] = useState('');
   const [hasGuessed, setHasGuessed] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+
+  // Scoring
   const [currentRoundScore, setCurrentRoundScore] = useState(100);
   const [wrongAttempts, setWrongAttempts] = useState(0);
+
+  // Chosen Player
   const [currentPlayer, setCurrentPlayer] = useState(null);
   const [currentImageUrl, setCurrentImageUrl] = useState(null);
-  const [gameComplete, setGameComplete] = useState(false);
-  const [showRoundSummary, setShowRoundSummary] = useState(false);
+  // Img Loading
   const [imageLoaded, setImageLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Multi-rounds
+  // Multi-Rounds
   const [currentRound, setCurrentRound] = useState(1);
   const [totalScore, setTotalScore] = useState(0);
   const [usedPlayerIds, setUsedPlayerIds] = useState([]);
   const [roundResults, setRoundResults] = useState([]);
+  const [showRoundSummary, setShowRoundSummary] = useState(false);
 
   // Hide Cursor
   const [showCursor, setShowCursor] = useState(false);
   const cursorTimeoutRef = useRef(null);
 
+  // Timer
   const timerRef = useRef(null);
   const gameTimerRef = useRef(null);
   const inputRef = useRef(null);
   const nextRoundButtonRef = useRef(null);
-  const [timeLeft, setTimeLeft] = useState(30); // 30 seconds per round
+  const [timeLeft, setTimeLeft] = useState(30); 
 
   // Constants for scoring
   const maxRounds = 10;
@@ -68,6 +77,7 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
   }
 };
 
+// Preload the cursor images
 const preloadCursorImages = () => {
   const cursorImages = [
     '/crosshair-orange.png',
@@ -89,7 +99,6 @@ const preloadCursorImages = () => {
 };
 
 useEffect(() => {
-  // Preload cursor images when component mounts
   preloadCursorImages();
 }, []);
 
@@ -341,6 +350,7 @@ useEffect(() => {
     }
   };
   
+  // go to next round
   const handleNextRound = () => {
     if (currentRound >= maxRounds) {
       setGameComplete(true);
@@ -357,6 +367,7 @@ useEffect(() => {
     }
   };
 
+  // set gamemode
   const handleModeSelect = (mode) => {
     setGameMode(mode);
     setGameStarted(true);
