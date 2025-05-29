@@ -1145,9 +1145,12 @@ return (
             {currentPlayer && (
               <div className="mb-8">
                 <ImageReveal 
-                  src={gameMode === 'free-for-all' && currentImageUrl 
-                    ? `http://localhost:3000/api/freeforall?path=${encodeURIComponent(currentImageUrl)}` 
-                    : `http://localhost:3000/api/headshot?id=${currentPlayer.headshotId}`
+                  src={
+                    gameMode === 'free-for-all' && currentImageUrl?.startsWith('http')
+                      ? currentImageUrl
+                      : gameMode === 'free-for-all'
+                      ? `http://localhost:3000/api/player-images?path=${encodeURIComponent(currentImageUrl)}`
+                      : `http://localhost:3000/api/player-headshot?id=${currentPlayer.headshotId}`
                   }
                   totalBlocks={25} 
                   interval={1200}
