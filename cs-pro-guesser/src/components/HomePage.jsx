@@ -9,29 +9,33 @@ export default function HomePage({ onSelectMode }) {
       id: 'headshot', 
       name: 'HEADSHOT', 
       description: 'Standard mode, guess the pro based off HLTV profile img.',
-      icon: '🎯',
-      color: '#FF6B35'
+      icon: '/headshot-icon.png', // Replace with your PNG path
+      color: '#FF6B35',
+      iconStyles: { marginLeft: '20px' }
     },
     { 
       id: 'free-for-all', 
       name: 'FREE FOR ALL', 
       description: 'Guess the pro based off random img of them!',
-      icon: '🎲',
-      color: '#c27aff'
+      icon: '/flash-icon.png', // Replace with your PNG path
+      color: '#c27aff',
+      iconStyles: { marginRight: '10px' }
     },
     { 
       id: 'quotes', 
       name: 'QUOTES', 
       description: 'Guess the pro from their quotes.',
-      icon: '💬',
-      color: '#45B7D1'
+      icon: '/defuse-icon.png', // Replace with your PNG path
+      color: '#45B7D1',
+      iconStyles: { marginRight: '15px' }
     },
     { 
       id: 'hardcore', 
       name: 'HARDCORE', 
       description: 'Very minimal data provided, can you guess the pro?',
-      icon: '⚠️',
-      color: '#f52a2a'
+      icon: '/c4-icon.png', // Replace with your PNG path
+      color: '#f52a2a',
+      iconStyles: { marginRight: '5px' }
     },
   ];
 
@@ -50,8 +54,6 @@ export default function HomePage({ onSelectMode }) {
       return '/crosshair-white.png'; // default crosshair
   }
 };
-
-
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
@@ -185,9 +187,19 @@ export default function HomePage({ onSelectMode }) {
                 )}
               </div>
 
-              {/* Mode Icon */}
-              <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                {mode.icon}
+              {/* Mode Icon - Updated to use PNG */}
+              <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
+                <img 
+                  src={mode.icon} 
+                  alt={`${mode.name} icon`}
+                  className="w-16 h-16 object-contain"
+                  style={{
+                    ...mode.iconStyles,
+                    filter: hoveredMode === mode.id 
+                      ? `drop-shadow(0 0 10px ${mode.color}80)` 
+                      : 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5))'
+                  }}
+                />
               </div>
 
               {/* Mode Name */}

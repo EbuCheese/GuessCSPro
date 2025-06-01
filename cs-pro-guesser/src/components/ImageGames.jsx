@@ -701,7 +701,17 @@ return (
                 <div className="relative z-10 h-full flex flex-col">
                   {/* Icon and Title */}
                   <div className="text-center mb-6">
-                    <div className="text-7xl mb-4 group-hover:scale-110 transition-transform duration-500">🎯</div>
+                    <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-500">
+                      <img 
+                        src="/headshot-icon.png" 
+                        alt="Headshot mode icon"
+                        className="w-20 h-20 object-contain"
+                        style={{
+                          marginLeft: '25px',
+                          filter: 'drop-shadow(0 4px 8px rgba(255, 107, 53, 0.3))'
+                        }}
+                      />
+                    </div>
                     <h4 
                       className="text-3xl md:text-4xl font-black mb-3 text-orange-400 group-hover:text-orange-300 transition-colors duration-300"
                       style={{ fontFamily: '"Rajdhani", sans-serif', letterSpacing: '0.1em' }}
@@ -790,7 +800,16 @@ return (
                 <div className="relative z-10 h-full flex flex-col">
                   {/* Icon and Title */}
                   <div className="text-center mb-6">
-                    <div className="text-7xl mb-4 group-hover:scale-110 transition-transform duration-500">🎲</div>
+                    <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-500">
+                      <img 
+                        src="/flash-icon.png" 
+                        alt="Free-for-all mode icon"
+                        className="w-20 h-20 object-contain"
+                        style={{
+                          filter: 'drop-shadow(0 4px 8px rgba(142, 68, 173, 0.3))'
+                        }}
+                      />
+                    </div>
                     <h4 
                       className="text-3xl md:text-4xl font-black mb-3 text-purple-400 group-hover:text-purple-300 transition-colors duration-300"
                       style={{ fontFamily: '"Rajdhani", sans-serif', letterSpacing: '0.1em' }}
