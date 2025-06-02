@@ -423,16 +423,16 @@ useEffect(() => {
 
 return (
   <div 
-  className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
-  style={{
-    cursor: gameStarted && !showRoundSummary && !gameComplete 
-      ? (showCursor 
-          ? `url(${gameMode === 'headshot' ? '/crosshair-orange.png' : '/crosshair-purple.png'}) 16 16, crosshair`
-          : 'none')
-      : `url(${gameMode === 'headshot' ? '/crosshair-orange.png' : '/crosshair-purple.png'}) 16 16, crosshair`
-  }}
-  onMouseMove={handleMouseMove}
->
+    className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
+    style={{
+      cursor: gameStarted && !showRoundSummary && !gameComplete 
+        ? (showCursor 
+            ? `url(${gameMode === 'headshot' ? '/crosshair-orange.png' : '/crosshair-purple.png'}) 16 16, crosshair`
+            : 'none')
+        : `url(${gameMode === 'headshot' ? '/crosshair-orange.png' : '/crosshair-purple.png'}) 16 16, crosshair`
+    }}
+    onMouseMove={handleMouseMove}
+  >
       {/* CS2 Background */}
       <div 
         className="absolute inset-0 z-0"
@@ -445,11 +445,10 @@ return (
         }}
       />
 
-      <div className="relative z-10 w-full max-w-6xl px-6 flex flex-col items-center justify-center min-h-screen">
         {/* Back Button */}
         <button 
           onClick={onBackToHome}
-          className={`absolute md:fixed top-4 left-4 md:top-6 md:left-6 flex items-center px-4 py-2 rounded-lg border border-gray-700 bg-gray-800/80 backdrop-blur-sm transition-all duration-300 z-30 group ${
+          className={`absolute top-4 left-4 md:top-6 md:left-6 flex items-center px-4 py-2 rounded-lg border border-gray-700 bg-gray-800/80 backdrop-blur-sm transition-all duration-300 z-30 group ${
             gameMode === 'free-for-all' 
               ? 'hover:border-purple-500 hover:bg-gray-700/80' 
               : 'hover:border-orange-500 hover:bg-gray-700/80'
@@ -486,11 +485,12 @@ return (
           </div>
         </button>
 
+      <div className="relative z-10 w-full max-w-6xl px-6 flex flex-col items-center justify-center min-h-screen">
         {/* Header - Only show when NOT in game complete state */}
         {!gameComplete && (
-          <div className="text-center mb-4 lg:mb-12 md:mb-6 mt-16 md:mt-0">
+          <div className="text-center mb-4 lg:mb-12 md:mb-6 mt-16 md:mt-0 landscape:mt-[6.5rem]">
             <h2 
-              className="text-5xl font-black mb-4 tracking-wider"
+              className="text-5xl font-black mb-4 tracking-wider mt-4 md:mt-0"
               style={{
                 fontFamily: '"Rajdhani", sans-serif',
                 background: gameMode === 'free-for-all' 
@@ -1222,48 +1222,49 @@ return (
             )}
             
             {/* Guess Input */}
-            <div className="w-full">
-              <form onSubmit={handleSubmitGuess} className="flex gap-3">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={answer}
-                  onChange={(e) => setAnswer(e.target.value)}
-                  placeholder={(imageLoaded && !loading) ? "Enter player name..." : "Loading..."}
-                  className={`flex-1 px-6 py-4 rounded-lg border border-gray-700 text-white text-lg transition-all focus:outline-none ${
-                    gameMode === 'free-for-all' ? 'focus:border-purple-500' : 'focus:border-orange-500'
-                  }`}
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(20, 25, 40, 0.8) 0%, rgba(35, 40, 55, 0.6) 100%)',
-                    backdropFilter: 'blur(5px)',
-                    fontFamily: '"Inter", sans-serif',
-                    cursor: `url(${gameMode === 'headshot' ? '/cursor-text-orange.png' : '/cursor-text-purple.png'}) 10 10, text`
-                  }}
-                  disabled={hasGuessed || !currentPlayer || !imageLoaded || loading}
-                  autoComplete="off"
-                  autoFocus
-                />
-                <button
-                  type="submit"
-                  className="px-8 py-4 font-bold text-lg rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                  style={{
-                    background: hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading 
-                      ? 'rgba(75, 85, 99, 0.5)' 
-                      : 'linear-gradient(45deg, #3B82F6, #1D4ED8)',
-                    color: '#fff',
-                    fontFamily: '"Rajdhani", sans-serif',
-                    letterSpacing: '0.1em',
-                    cursor: `url(${getCursorUrl(gameMode)}) 16 16, crosshair`,
-                    boxShadow: hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading 
-                      ? 'none' 
-                      : '0 4px 15px rgba(59, 130, 246, 0.3)'
-                  }}
-                  disabled={hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading}
-                >
-                  SUBMIT <span className="text-sm text-gray-300">(Enter)</span>
-                </button>
-              </form>
-            </div>
+          <div className="w-full">
+            <form onSubmit={handleSubmitGuess} className="flex flex-col sm:flex-row gap-3">
+              <input
+                ref={inputRef}
+                type="text"
+                value={answer}
+                onChange={(e) => setAnswer(e.target.value)}
+                placeholder={(imageLoaded && !loading) ? "Enter player name..." : "Loading..."}
+                className={`flex-1 px-4 sm:px-6 py-3 sm:py-4 rounded-lg border border-gray-700 text-white text-base sm:text-lg transition-all focus:outline-none ${
+                  gameMode === 'free-for-all' ? 'focus:border-purple-500' : 'focus:border-orange-500'
+                }`}
+                style={{
+                  background: 'linear-gradient(135deg, rgba(20, 25, 40, 0.8) 0%, rgba(35, 40, 55, 0.6) 100%)',
+                  backdropFilter: 'blur(5px)',
+                  fontFamily: '"Inter", sans-serif',
+                  cursor: `url(${gameMode === 'headshot' ? '/cursor-text-orange.png' : '/cursor-text-purple.png'}) 10 10, text`
+                }}
+                disabled={hasGuessed || !currentPlayer || !imageLoaded || loading}
+                autoComplete="off"
+                autoFocus
+              />
+              <button
+                type="submit"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 font-bold text-base sm:text-lg rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                style={{
+                  background: hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading
+                    ? 'rgba(75, 85, 99, 0.5)'
+                    : 'linear-gradient(45deg, #3B82F6, #1D4ED8)',
+                  color: '#fff',
+                  fontFamily: '"Rajdhani", sans-serif',
+                  letterSpacing: '0.1em',
+                  cursor: `url(${getCursorUrl(gameMode)}) 16 16, crosshair`,
+                  boxShadow: hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading
+                    ? 'none'
+                    : '0 4px 15px rgba(59, 130, 246, 0.3)'
+                }}
+                disabled={hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading}
+              >
+                <span className="block sm:inline">SUBMIT</span>
+                <span className="block sm:inline text-sm text-gray-300 sm:ml-1">(Enter)</span>
+              </button>
+            </form>
+          </div>
           </div>
         )}
       </div>
