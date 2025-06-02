@@ -422,7 +422,6 @@ useEffect(() => {
   };
 
 return (
-  // main container and crosshair color for gamemode
   <div 
   className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
   style={{
@@ -446,37 +445,50 @@ return (
         }}
       />
 
-      {/* Back Button */}
-      <button 
-        onClick={onBackToHome}
-        className={`absolute top-6 left-6 flex items-center space-x-2 px-4 py-2 rounded-lg border border-gray-700 bg-gray-800/80 backdrop-blur-sm transition-all duration-300 z-20 group ${
-          gameMode === 'free-for-all' 
-            ? 'hover:border-purple-500 hover:bg-gray-700/80' 
-            : 'hover:border-orange-500 hover:bg-gray-700/80'
-        }`}
-        style={{
-          cursor: `url(${getCursorUrl(gameMode)}) 16 16, crosshair`
-        }}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 text-gray-400 transition-colors ${
-          gameMode === 'free-for-all' 
-            ? 'group-hover:text-purple-400' 
-            : 'group-hover:text-orange-400'
-        }`} viewBox="0 0 20 20" fill="currentColor">
-          <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
-        </svg>
-        <span 
-          className="text-gray-300 group-hover:text-white font-semibold transition-colors"
-          style={{ fontFamily: '"Rajdhani", sans-serif' }}
-        >
-          HOME
-        </span>
-      </button>
-
       <div className="relative z-10 w-full max-w-6xl px-6 flex flex-col items-center justify-center min-h-screen">
+        {/* Back Button */}
+        <button 
+          onClick={onBackToHome}
+          className={`absolute md:fixed top-4 left-4 md:top-6 md:left-6 flex items-center px-4 py-2 rounded-lg border border-gray-700 bg-gray-800/80 backdrop-blur-sm transition-all duration-300 z-30 group ${
+            gameMode === 'free-for-all' 
+              ? 'hover:border-purple-500 hover:bg-gray-700/80' 
+              : 'hover:border-orange-500 hover:bg-gray-700/80'
+          }`}
+          style={{
+            cursor: `url(${getCursorUrl(gameMode)}) 16 16, crosshair`
+          }}
+        >
+          {/* Home icon - visible on mobile only */}
+          <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 text-gray-400 transition-colors ${
+            gameMode === 'free-for-all' 
+              ? 'group-hover:text-purple-400' 
+              : 'group-hover:text-orange-400'
+          } block md:hidden`} viewBox="0 0 20 20" fill="currentColor">
+            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+          </svg>
+          
+          {/* Back arrow and text - visible on desktop only */}
+          <div className="hidden md:flex md:items-center md:space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 text-gray-400 transition-colors ${
+              gameMode === 'free-for-all' 
+                ? 'group-hover:text-purple-400' 
+                : 'group-hover:text-orange-400'
+            }`} viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+            </svg>
+            
+            <span 
+              className="text-gray-300 group-hover:text-white font-semibold transition-colors"
+              style={{ fontFamily: '"Rajdhani", sans-serif' }}
+            >
+              HOME
+            </span>
+          </div>
+        </button>
+
         {/* Header - Only show when NOT in game complete state */}
         {!gameComplete && (
-          <div className="text-center mb-12">
+          <div className="text-center mb-4 lg:mb-12 md:mb-6 mt-16 md:mt-0">
             <h2 
               className="text-5xl font-black mb-4 tracking-wider"
               style={{
@@ -527,7 +539,6 @@ return (
                 />
               </svg>
 
-
               <div 
                 className="h-px bg-gradient-to-r from-transparent to-transparent w-32"
                 style={{
@@ -544,7 +555,7 @@ return (
         <div className="w-full max-w-4xl">
           {/* Challenge Rules Header - Enhanced with animations */}
           <div 
-            className="p-6 rounded-xl border-2 text-center mb-8 relative overflow-hidden group"
+            className="p-6 rounded-xl border-2 text-center mb-4 md:mb-8 relative overflow-hidden group" /* Change mb-8 to responsive */
             style={{
               background: gameMode === 'free-for-all' 
                 ? 'linear-gradient(135deg, rgba(142, 68, 173, 0.1) 0%, rgba(52, 152, 219, 0.08) 50%, rgba(26, 31, 46, 0.95) 100%)'
