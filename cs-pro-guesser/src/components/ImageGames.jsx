@@ -878,7 +878,7 @@ return (
         </div>
         ) : gameComplete ? (
         /* Game Complete Screen - Fixed button interaction */
-        <div className="flex flex-col items-center w-full max-w-4xl justify-center relative z-20">
+        <div className="flex flex-col items-center w-full max-w-4xl justify-center relative z-20" style={{ paddingTop: '25px', paddingBottom: '25px' }}>
           <div 
             className="p-8 rounded-xl border-2 w-full relative overflow-hidden group"
             style={{
