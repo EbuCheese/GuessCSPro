@@ -16,6 +16,10 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
   const [currentRoundScore, setCurrentRoundScore] = useState(100);
   const [wrongAttempts, setWrongAttempts] = useState(0);
 
+  // Hints
+  const [hintsUsed, setHintsUsed] = useState(0);
+  const [currentHint, setCurrentHint] = useState('');
+
   // Chosen Player
   const [currentPlayer, setCurrentPlayer] = useState(null);
   const [currentImageUrl, setCurrentImageUrl] = useState(null);
@@ -48,6 +52,7 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
   const baseScore = 100;
   const timeDecayRate = 2; // Points lost per second
   const wrongAnswerPenalty = 15; // Increased penalty for wrong answers
+  const hintPenalty = 10;
   const minScore = 10; // Minimum score per round
 
   // Helper function to normalize names for comparison
@@ -128,6 +133,53 @@ useEffect(() => {
   };
 }, []);
 
+ // Generate hint based on hint level and player name
+  const generateHint = (playerName, hintLevel) => {
+    if (!playerName) return '';
+    
+    const name = playerName.trim();
+    
+    switch (hintLevel) {
+      case 1:
+        // Show number of letters as underscores
+        return name.replace(/[a-zA-Z]/g, '_').replace(/\s+/g, ' ');
+      case 2:
+        // Show first letter + underscores for the rest
+        return name.charAt(0) + name.slice(1).replace(/[a-zA-Z]/g, '_').replace(/\s+/g, ' ');
+      case 3:
+        // Show first letter + underscores + last letter
+        if (name.length <= 1) return name;
+        const lastChar = name.charAt(name.length - 1);
+        const middle = name.slice(1, -1).replace(/[a-zA-Z]/g, '_');
+        return name.charAt(0) + middle + lastChar;
+      default:
+        return '';
+    }
+  };
+
+  // Handle hint button click
+  const handleHintClick = () => {
+    if (!currentPlayer || hasGuessed || hintsUsed >= 3) return;
+    
+    const nextHintLevel = hintsUsed + 1;
+    const hint = generateHint(currentPlayer.name, nextHintLevel);
+    
+    setHintsUsed(nextHintLevel);
+    setCurrentHint(hint);
+    setCurrentRoundScore(prevScore => Math.max(minScore, prevScore - hintPenalty));
+    
+    // Refocus input after hint
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 100);
+  };
+
+  const resetHints = () => {
+    setHintsUsed(0);
+    setCurrentHint('');
+  };
 
   // Enhanced answer checking function
   const checkAnswer = (userAnswer, correctName) => {
@@ -232,6 +284,9 @@ useEffect(() => {
       setUsedPlayerIds(prev => [...prev, playerData.id]);
       setCurrentPlayer(playerData);
       
+      // Reset hints for new player
+      resetHints();
+
       // For free-for-all mode, set the selected random image URL
       if (gameMode === 'free-for-all' && playerData.selectedImageUrl) {
         setCurrentImageUrl(playerData.selectedImageUrl);
@@ -319,6 +374,7 @@ useEffect(() => {
       score: 0, // No points for time up
       isCorrect: false,
       wrongAttempts: wrongAttempts,
+      hintsUsed: hintsUsed,
       timeUsed: 30
     };
     
@@ -348,6 +404,7 @@ useEffect(() => {
         score: finalScore,
         isCorrect: true,
         wrongAttempts: wrongAttempts,
+        hintsUsed: hintsUsed,
         timeUsed: 30 - timeLeft
       };
       
@@ -385,6 +442,7 @@ useEffect(() => {
       setIsCorrect(false);
       setShowRoundSummary(false);
       setImageLoaded(false); 
+      resetHints();
     }
   };
 
@@ -419,6 +477,7 @@ useEffect(() => {
     setImageLoaded(false);
     setLoading(false);
     setError(null);
+    resetHints();
   };
 
 return (
@@ -1172,6 +1231,37 @@ return (
               </div>
             )}
 
+            {/* Hint Display */}
+            {currentHint && (
+              <div
+                className="mb-6 px-6 py-4 rounded-lg border-2"
+                style={{
+                  background: gameMode === 'free-for-all'
+                    ? 'linear-gradient(135deg, rgba(142, 68, 173, 0.2) 0%, rgba(52, 152, 219, 0.1) 100%)'
+                    : 'linear-gradient(135deg, rgba(255, 107, 53, 0.2) 0%, rgba(243, 156, 18, 0.1) 100%)',
+                  borderColor: gameMode === 'free-for-all' ? '#8E44AD' : '#FF6B35',
+                  backdropFilter: 'blur(5px)'
+                }}
+              >
+                <div className="text-center">
+                  <span className="text-gray-300 text-sm block mb-2" style={{ fontFamily: '"Inter", sans-serif' }}>
+                    Hint {hintsUsed}/3:
+                  </span>
+                  <div 
+                    className="font-black text-2xl tracking-[0.3em] px-4 py-2 rounded-md"
+                    style={{
+                      fontFamily: '"Courier New", monospace',
+                      color: gameMode === 'free-for-all' ? '#A855F7' : '#F97316',
+                      backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                      letterSpacing: '0.3em'
+                    }}
+                  >
+                    {currentHint}
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Loading State */}
             {loading && (
               <div 
@@ -1222,49 +1312,88 @@ return (
             )}
             
             {/* Guess Input */}
-          <div className="w-full">
-            <form onSubmit={handleSubmitGuess} className="flex flex-col sm:flex-row gap-3">
-              <input
-                ref={inputRef}
-                type="text"
-                value={answer}
-                onChange={(e) => setAnswer(e.target.value)}
-                placeholder={(imageLoaded && !loading) ? "Enter player name..." : "Loading..."}
-                className={`flex-1 px-4 sm:px-6 py-3 sm:py-4 rounded-lg border border-gray-700 text-white text-base sm:text-lg transition-all focus:outline-none ${
-                  gameMode === 'free-for-all' ? 'focus:border-purple-500' : 'focus:border-orange-500'
-                }`}
-                style={{
-                  background: 'linear-gradient(135deg, rgba(20, 25, 40, 0.8) 0%, rgba(35, 40, 55, 0.6) 100%)',
-                  backdropFilter: 'blur(5px)',
-                  fontFamily: '"Inter", sans-serif',
-                  cursor: `url(${gameMode === 'headshot' ? '/cursor-text-orange.png' : '/cursor-text-purple.png'}) 10 10, text`
-                }}
-                disabled={hasGuessed || !currentPlayer || !imageLoaded || loading}
-                autoComplete="off"
-                autoFocus
-              />
-              <button
-                type="submit"
-                className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 font-bold text-base sm:text-lg rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                style={{
-                  background: hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading
-                    ? 'rgba(75, 85, 99, 0.5)'
-                    : 'linear-gradient(45deg, #3B82F6, #1D4ED8)',
-                  color: '#fff',
-                  fontFamily: '"Rajdhani", sans-serif',
-                  letterSpacing: '0.1em',
-                  cursor: `url(${getCursorUrl(gameMode)}) 16 16, crosshair`,
-                  boxShadow: hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading
-                    ? 'none'
-                    : '0 4px 15px rgba(59, 130, 246, 0.3)'
-                }}
-                disabled={hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading}
-              >
-                <span className="block sm:inline">SUBMIT</span>
-                <span className="block sm:inline text-sm text-gray-300 sm:ml-1">(Enter)</span>
-              </button>
-            </form>
-          </div>
+            <div className="w-full">
+              <form onSubmit={handleSubmitGuess} className="flex flex-col sm:flex-row gap-3">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={answer}
+                  onChange={(e) => setAnswer(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'h' || e.key === 'H') {
+                      if (e.ctrlKey || e.metaKey) return; // Allow normal copy/paste shortcuts
+                      if (!currentPlayer || hasGuessed || hintsUsed >= 3) return;
+                      e.preventDefault();
+                      handleHintClick();
+                    }
+                  }}
+                  placeholder={(imageLoaded && !loading) ? "Enter player name..." : "Loading..."}
+                  className={`flex-1 px-4 sm:px-6 py-3 sm:py-4 rounded-lg border border-gray-700 text-white text-base sm:text-lg transition-all focus:outline-none ${
+                    gameMode === 'free-for-all' ? 'focus:border-purple-500' : 'focus:border-orange-500'
+                  }`}
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(20, 25, 40, 0.8) 0%, rgba(35, 40, 55, 0.6) 100%)',
+                    backdropFilter: 'blur(5px)',
+                    fontFamily: '"Inter", sans-serif',
+                    cursor: `url(${gameMode === 'headshot' ? '/cursor-text-orange.png' : '/cursor-text-purple.png'}) 10 10, text`
+                  }}
+                  disabled={hasGuessed || !currentPlayer || !imageLoaded || loading}
+                  autoComplete="off"
+                  autoFocus
+                />
+                
+                <div className="flex gap-3">
+                  <button
+                    type="submit"
+                    className="flex-1 sm:flex-none px-6 sm:px-8 py-3 sm:py-4 font-bold text-base sm:text-lg rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    style={{
+                      background: hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading
+                        ? 'rgba(75, 85, 99, 0.5)'
+                        : 'linear-gradient(45deg, #3B82F6, #1D4ED8)',
+                      color: '#fff',
+                      fontFamily: '"Rajdhani", sans-serif',
+                      letterSpacing: '0.1em',
+                      cursor: `url(${getCursorUrl(gameMode)}) 16 16, crosshair`,
+                      boxShadow: hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading
+                        ? 'none'
+                        : '0 4px 15px rgba(59, 130, 246, 0.3)'
+                    }}
+                    disabled={hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading}
+                  >
+                    <span className="block sm:inline">SUBMIT</span>
+                    <span className="block sm:inline text-sm text-gray-300 sm:ml-1">('Enter')</span>
+                  </button>
+
+                  {/* Hint Button */}
+                  <button
+                    type="button"
+                    onClick={handleHintClick}
+                    className="px-4 sm:px-6 py-3 sm:py-4 font-bold text-sm sm:text-base rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none whitespace-nowrap"
+                    style={{
+                      background: hasGuessed || !currentPlayer || !imageLoaded || loading || hintsUsed >= 3
+                        ? 'rgba(75, 85, 99, 0.5)'
+                        : gameMode === 'free-for-all'
+                          ? 'linear-gradient(45deg, #8E44AD, #6366F1)'
+                          : 'linear-gradient(45deg, #FF6B35, #F59E0B)',
+                      color: '#fff',
+                      fontFamily: '"Rajdhani", sans-serif',
+                      letterSpacing: '0.1em',
+                      cursor: `url(${getCursorUrl(gameMode)}) 16 16, crosshair`,
+                      boxShadow: hasGuessed || !currentPlayer || !imageLoaded || loading || hintsUsed >= 3
+                        ? 'none'
+                        : gameMode === 'free-for-all'
+                          ? '0 4px 15px rgba(142, 68, 173, 0.3)'
+                          : '0 4px 15px rgba(255, 107, 53, 0.3)'
+                    }}
+                    disabled={hasGuessed || !currentPlayer || !imageLoaded || loading || hintsUsed >= 3}
+                  >
+                    <span className="block sm:inline">💡 HINT</span>
+                    <span className="block sm:inline text-xs text-gray-300">('H')</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+
           </div>
         )}
       </div>
