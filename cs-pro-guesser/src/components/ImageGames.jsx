@@ -1320,12 +1320,18 @@ return (
                   value={answer}
                   onChange={(e) => setAnswer(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === 'h' || e.key === 'H') {
-                      if (e.ctrlKey || e.metaKey) return; // Allow normal copy/paste shortcuts
-                      if (!currentPlayer || hasGuessed || hintsUsed >= 3) return;
-                      e.preventDefault();
-                      handleHintClick();
+                    if (e.key === ' ') {
+                    if (!currentPlayer || hasGuessed || hintsUsed >= 3) return;
+                    e.preventDefault();
+                    e.target.blur();
+                    handleHintClick();
+
+                    setTimeout(() => {
+                    if (inputRef.current) {
+                      inputRef.current.focus();
                     }
+                  }, 100);
+                  }
                   }}
                   placeholder={(imageLoaded && !loading) ? "Enter player name..." : "Loading..."}
                   className={`flex-1 px-4 sm:px-6 py-3 sm:py-4 rounded-lg border border-gray-700 text-white text-base sm:text-lg transition-all focus:outline-none ${
@@ -1361,7 +1367,7 @@ return (
                     disabled={hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading}
                   >
                     <span className="block sm:inline">SUBMIT</span>
-                    <span className="block sm:inline text-sm text-gray-300 sm:ml-1">('Enter')</span>
+                    <span className="block sm:inline text-sm text-gray-300 sm:ml-1">(Enter)</span>
                   </button>
 
                   {/* Hint Button */}
@@ -1388,7 +1394,7 @@ return (
                     disabled={hasGuessed || !currentPlayer || !imageLoaded || loading || hintsUsed >= 3}
                   >
                     <span className="block sm:inline">💡 HINT</span>
-                    <span className="block sm:inline text-xs text-gray-300">('H')</span>
+                    <span className="block sm:inline text-xs text-gray-300">(Space)</span>
                   </button>
                 </div>
               </form>
