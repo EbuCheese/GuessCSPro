@@ -382,51 +382,65 @@ useEffect(() => {
     setShowRoundSummary(true);
   };
 
-  const handleSubmitGuess = (e) => {
-    if (e) e.preventDefault();
+const handleSubmitGuess = async (e) => {
+  e.preventDefault();
+  if (hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading) return;
+ 
+  // Temporarily blur input to prevent auto-scroll
+  if (inputRef.current) {
+    inputRef.current.blur();
+  }
+   
+  // Use enhanced answer checking with the player name from API
+  if (checkAnswer(answer, currentPlayer.name)) {
+    // Correct answer
+    if (gameTimerRef.current) clearInterval(gameTimerRef.current);
+    setHasGuessed(true);
+    setIsCorrect(true);
+   
+    const timeBonus = Math.floor(timeLeft * 2);
+    const finalScore = Math.max(minScore, Math.floor(currentRoundScore + timeBonus));
+    setCurrentRoundScore(finalScore);
+   
+    const roundResult = {
+      round: currentRound,
+      playerName: currentPlayer.name,
+      score: finalScore,
+      isCorrect: true,
+      wrongAttempts: wrongAttempts,
+      hintsUsed: hintsUsed,
+      timeUsed: 30 - timeLeft
+    };
+   
+    setRoundResults(prev => [...prev, roundResult]);
+    setTotalScore(prev => prev + finalScore);
+    setShowRoundSummary(true);
     
-    if (!currentPlayer || hasGuessed || loading) return;
-    
-    // Use enhanced answer checking with the player name from API
-    if (checkAnswer(answer, currentPlayer.name)) {
-      // Correct answer
-      if (gameTimerRef.current) clearInterval(gameTimerRef.current);
-      setHasGuessed(true);
-      setIsCorrect(true);
-      
-      const timeBonus = Math.floor(timeLeft * 2);
-      const finalScore = Math.max(minScore, Math.floor(currentRoundScore + timeBonus));
-      setCurrentRoundScore(finalScore);
-      
-      const roundResult = {
-        round: currentRound,
-        playerName: currentPlayer.name,
-        score: finalScore,
-        isCorrect: true,
-        wrongAttempts: wrongAttempts,
-        hintsUsed: hintsUsed,
-        timeUsed: 30 - timeLeft
-      };
-      
-      setRoundResults(prev => [...prev, roundResult]);
-      setTotalScore(prev => prev + finalScore);
-      setShowRoundSummary(true);
-    } else {
-      // Wrong answer
-      setWrongAttempts(prev => prev + 1);
-      setCurrentRoundScore(prevScore => Math.max(minScore, prevScore - wrongAnswerPenalty));
-      setAnswer('');
-      
+  } else {
+    // Wrong answer
+    setWrongAttempts(prev => prev + 1);
+    setCurrentRoundScore(prevScore => Math.max(minScore, prevScore - wrongAnswerPenalty));
+    setAnswer('');
+   
+    // After state updates, scroll to keep input visible and refocus
+    setTimeout(() => {
       if (inputRef.current) {
-        inputRef.current.focus();
+        // Scroll the input into view smoothly
+        inputRef.current.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center' // Centers the input in the viewport
+        });
+        
+        // Refocus after scrolling
+        setTimeout(() => {
+          if (inputRef.current && !hasGuessed) {
+            inputRef.current.focus();
+          }
+        }, 300); // Wait a bit for smooth scroll to complete
       }
-      setTimeout(() => {
-        if (inputRef.current) {
-          inputRef.current.focus();
-        }
-      }, 100);
-    }
-  };
+    }, 100); // Wait for DOM updates from state changes
+  }
+};
   
   // go to next round
   const handleNextRound = () => {
@@ -458,7 +472,6 @@ useEffect(() => {
     if (gameTimerRef.current) clearInterval(gameTimerRef.current);
     
     // Reset all game state
-    setGameMode(null);
     setGameStarted(false);
     setAnswer('');
     setHasGuessed(false);
@@ -478,6 +491,10 @@ useEffect(() => {
     setLoading(false);
     setError(null);
     resetHints();
+
+    setTimeout(() => {
+      setGameStarted(true);
+    }, 100); // Small delay to ensure state is reset
   };
 
 return (
