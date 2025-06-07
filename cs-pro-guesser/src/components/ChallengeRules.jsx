@@ -85,7 +85,7 @@ const ChallengeRules = ({ gameMode = 'headshot' }) => {
             )}
           </button>
 
-          <div className="text-center pr-12 sm:pr-0">
+          <div className="text-center sm:pr-0">
             <h3 
               className="text-xl sm:text-2xl font-black tracking-wider mb-2"
               style={{
@@ -95,7 +95,7 @@ const ChallengeRules = ({ gameMode = 'headshot' }) => {
                 fontFamily: '"Rajdhani", sans-serif'
               }}
             >
-              <span className="hidden sm:inline">⚡ </span>CHALLENGE RULES<span className="hidden sm:inline"> ⚡</span>
+              <span className="hidden min-[450px]:inline">⚡ </span>CHALLENGE RULES<span className="hidden min-[450px]:inline"> ⚡</span>
             </h3>
           </div>
         </div>

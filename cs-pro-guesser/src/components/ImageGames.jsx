@@ -565,7 +565,7 @@ return (
       <div className="relative z-10 w-full max-w-6xl px-6 flex flex-col items-center justify-center min-h-screen">
         {/* Header - Only show when NOT in game complete state */}
         {!gameComplete && (
-          <div className="text-center mb-4 lg:mb-12 md:mb-6 mt-16 md:mt-0 landscape:mt-[6.5rem]">
+          <div className="text-center mb-4 lg:mb-12 md:mb-6 mt-16 md:mt-0 landscape:mt-5">
             <h2 
               className="text-5xl font-black mb-4 tracking-wider mt-4 md:mt-0"
               style={{
