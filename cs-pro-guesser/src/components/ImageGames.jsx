@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import ImageReveal from './ImageReveal';
+import ChallengeRules from './ChallengeRules';
 
 export default function ImageGames({ onBackToHome, initialGameMode  }) {
   // Game Start-End
@@ -629,131 +630,10 @@ return (
 
         {!gameStarted ? (
         <div className="w-full max-w-4xl">
-          {/* Challenge Rules Header - Enhanced with animations */}
-          <div 
-            className="p-6 rounded-xl border-2 text-center mb-4 md:mb-8 relative overflow-hidden group" /* Change mb-8 to responsive */
-            style={{
-              background: gameMode === 'free-for-all' 
-                ? 'linear-gradient(135deg, rgba(142, 68, 173, 0.1) 0%, rgba(52, 152, 219, 0.08) 50%, rgba(26, 31, 46, 0.95) 100%)'
-                : gameMode === 'headshot'
-                  ? 'linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(243, 156, 18, 0.08) 50%, rgba(26, 31, 46, 0.95) 100%)'
-                  : 'linear-gradient(135deg, rgba(26, 31, 46, 0.9) 0%, rgba(45, 55, 72, 0.7) 100%)',
-              borderColor: gameMode === 'free-for-all' 
-                ? 'rgba(142, 68, 173, 0.3)' 
-                : gameMode === 'headshot'
-                  ? 'rgba(255, 107, 53, 0.3)'
-                  : 'rgba(107, 114, 128, 0.5)',
-              backdropFilter: 'blur(15px)',
-              boxShadow: gameMode === 'free-for-all'
-                ? '0 8px 32px rgba(142, 68, 173, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
-                : gameMode === 'headshot'
-                  ? '0 8px 32px rgba(255, 107, 53, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
-                  : '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
-            }}
-          >
-            {/* Animated background glow */}
-            <div 
-              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-              style={{
-                background: gameMode === 'free-for-all'
-                  ? 'radial-gradient(circle at 50% 50%, rgba(142, 68, 173, 0.1) 0%, transparent 70%)'
-                  : gameMode === 'headshot'
-                    ? 'radial-gradient(circle at 50% 50%, rgba(255, 107, 53, 0.1) 0%, transparent 70%)'
-                    : 'radial-gradient(circle at 50% 50%, rgba(107, 114, 128, 0.1) 0%, transparent 70%)'
-              }}
-            />
-            
-            <div className="relative z-10">
-              <h3 
-                className="text-lg md:text-xl font-black mb-4 tracking-wide group-hover:scale-105 transition-transform duration-300"
-                style={{ 
-                  fontFamily: '"Rajdhani", sans-serif',
-                  background: gameMode === 'free-for-all'
-                    ? 'linear-gradient(45deg, #8E44AD, #3498DB)'
-                    : gameMode === 'headshot'
-                      ? 'linear-gradient(45deg, #FF6B35, #F39C12)'
-                      : 'linear-gradient(45deg, #6B7280, #9CA3AF)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text'
-                }}
-              >
-                ⚡ CHALLENGE RULES ⚡
-              </h3>
-              
-              {/* Horizontal rules layout for better balance */}
-              <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8">
-                <div className="flex items-center gap-2 group-hover:scale-105 transition-transform duration-300">
-                  <span 
-                    className="text-xl"
-                    style={{
-                      color: gameMode === 'free-for-all' ? '#8E44AD' : gameMode === 'headshot' ? '#FF6B35' : '#6B7280'
-                    }}
-                  >
-                    🔥
-                  </span>
-                  <span 
-                    className="font-bold text-lg"
-                    style={{ 
-                      fontFamily: '"Rajdhani", sans-serif',
-                      color: gameMode === 'free-for-all' ? '#A855F7' : gameMode === 'headshot' ? '#F97316' : '#9CA3AF'
-                    }}
-                  >
-                    10 ROUNDS
-                  </span>
-                </div>
-                
-                <div className="text-gray-500">•</div>
-                
-                <div className="flex items-center gap-2 group-hover:scale-105 transition-transform duration-300">
-                  <span 
-                    className="text-xl"
-                    style={{
-                      color: gameMode === 'free-for-all' ? '#3498DB' : gameMode === 'headshot' ? '#F39C12' : '#6B7280'
-                    }}
-                  >
-                    ⏱️
-                  </span>
-                  <span 
-                    className="font-bold text-lg"
-                    style={{ 
-                      fontFamily: '"Rajdhani", sans-serif',
-                      color: gameMode === 'free-for-all' ? '#60A5FA' : gameMode === 'headshot' ? '#FBBF24' : '#9CA3AF'
-                    }}
-                  >
-                    30s EACH
-                  </span>
-                </div>
-                
-                <div className="text-gray-500">•</div>
-                
-                <div className="flex items-center gap-2 group-hover:scale-105 transition-transform duration-300">
-                  <span className="text-xl text-green-400">💯</span>
-                  <span 
-                    className="font-bold text-lg text-green-400"
-                    style={{ fontFamily: '"Rajdhani", sans-serif' }}
-                  >
-                    100 START PTS
-                  </span>
-                </div>
-                
-                <div className="text-gray-500">•</div>
-                
-                <div className="flex items-center gap-2 group-hover:scale-105 transition-transform duration-300">
-                  <span className="text-xl text-red-400">❌</span>
-                  <span 
-                    className="font-bold text-lg text-red-400"
-                    style={{ fontFamily: '"Rajdhani", sans-serif' }}
-                  >
-                    -15 PENALTY
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <ChallengeRules gameMode={gameMode} />
 
           {/* Mode Selection - Enhanced with better animations */}
-          <div className={`grid gap-8 w-full ${!initialGameMode ? 'grid-cols-1 lg:grid-cols-2' : 'max-w-lg mx-auto'}`}>
+          <div className={`grid gap-8 w-full ${!initialGameMode ? 'grid-cols-1 lg:grid-cols-2' : 'max-w-lg mx-auto mb-6'}`}>
             {/* Headshot Mode */}
             {(!initialGameMode || initialGameMode === 'headshot') && (
               <div 
