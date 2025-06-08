@@ -43,10 +43,14 @@ const ChallengeRules = ({ gameMode = 'headshot' }) => {
         className="relative rounded-xl backdrop-blur-xl border overflow-hidden transition-all duration-300"
         style={{
           background: gameMode === 'free-for-all' 
-            ? `${theme.bg}, rgba(20, 18, 30, 0.9)` 
+            ? 'linear-gradient(135deg, rgba(145, 145, 145, 0.08) 0%, rgba(211, 211, 211, 0.06) 100%), rgba(22, 19, 34, 0.9)'
             : `${theme.bg}, rgba(15, 23, 42, 0.9)`,
-          borderColor: theme.border,
-          boxShadow: `0 8px 32px ${theme.glow}, inset 0 1px 0 rgba(255, 255, 255, 0.05)`
+          borderColor: gameMode === 'free-for-all'
+            ? 'rgba(151, 41, 255, 0.4)'
+            : theme.border,
+          boxShadow: gameMode === 'free-for-all'
+            ? 'rgba(168, 85, 247, 0.15) 0px 8px 32px, rgba(255, 255, 255, 0.05) 0px 1px 0px inset'
+            : `0 8px 32px ${theme.glow}, inset 0 1px 0 rgba(255, 255, 255, 0.05)`
         }}
       >
         {/* Header with Toggle Button */}
