@@ -14,10 +14,10 @@ const ChallengeRules = ({ gameMode = 'headshot' }) => {
     },
     'free-for-all': {
       primary: '#A855F7',
-      secondary: '#3B82F6',
+      secondary: '#EC4899',
       border: 'rgba(168, 85, 247, 0.4)',
       glow: 'rgba(168, 85, 247, 0.15)',
-      bg: 'linear-gradient(135deg, rgba(168, 85, 247, 0.08) 0%, rgba(59, 130, 246, 0.06) 100%)'
+      bg: 'linear-gradient(135deg, rgba(168, 85, 247, 0.08) 0%, rgba(236, 72, 153, 0.06) 100%)'
     }
   };
 
@@ -34,15 +34,17 @@ const ChallengeRules = ({ gameMode = 'headshot' }) => {
     { icon: '❌', label: 'Wrong', value: '-15 pts', color: '#EF4444' },
     { icon: '💡', label: 'Hints', value: '3 available', color: '#06B6D4' },
     { icon: '💰', label: 'Hint Cost', value: '-10 pts', color: '#F59E0B' },
-    { icon: '⏳', label: 'Time Decay', value: '-2/sec', color: '#8B5CF6' }
+    { icon: '⏳', label: 'Time Decay', value: '-2/sec', color: '#9333EA' }
   ];
 
   return (
-    <div className="w-full max-w-4xl mx-auto mb-6">
+    <div className="w-full max-w-lg mx-auto mb-6">
       <div 
         className="relative rounded-xl backdrop-blur-xl border overflow-hidden transition-all duration-300"
         style={{
-          background: `${theme.bg}, rgba(15, 23, 42, 0.9)`,
+          background: gameMode === 'free-for-all' 
+            ? `${theme.bg}, rgba(20, 18, 30, 0.9)` 
+            : `${theme.bg}, rgba(15, 23, 42, 0.9)`,
           borderColor: theme.border,
           boxShadow: `0 8px 32px ${theme.glow}, inset 0 1px 0 rgba(255, 255, 255, 0.05)`
         }}
@@ -100,15 +102,15 @@ const ChallengeRules = ({ gameMode = 'headshot' }) => {
           </div>
         </div>
 
-        {/* Expandable Content */}
+        {/* Expandable Content - Fixed height constraints */}
         <div 
           className={`transition-all duration-300 ease-in-out overflow-hidden ${
-            isMinimized ? 'max-h-0 opacity-0' : 'max-h-[500px] md:max-h-[600px] lg:max-h-96 opacity-100'
+            isMinimized ? 'max-h-0 opacity-0' : 'max-h-none opacity-100'
           }`}
         >
           <div className="px-4 sm:px-6 pb-6">
             {/* Game Duration */}
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6 max-w-md mx-auto">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6 mt-2 max-w-lg mx-auto">
               {gameInfo.map((info, index) => (
                 <div
                   key={index}
@@ -146,8 +148,8 @@ const ChallengeRules = ({ gameMode = 'headshot' }) => {
               ))}
             </div>
 
-            {/* Scoring Rules */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 mb-6">
+            {/* Scoring Rules - Fixed grid layout */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-3 mb-6">
               {scoringRules.map((rule, index) => (
                 <div
                   key={index}
