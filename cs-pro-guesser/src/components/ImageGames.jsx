@@ -383,6 +383,16 @@ useEffect(() => {
     setShowRoundSummary(true);
   };
 
+const getTimeBonusMultiplier = (gameMode) => {
+  switch (gameMode) {
+    case 'hardcore': return 150;
+    case 'free-for-all': return 120;
+    case 'headshot': return 100;
+    case 'quotes': return 80;
+    default: return 100;
+  }
+};
+
 const handleSubmitGuess = async (e) => {
   e.preventDefault();
   if (hasGuessed || !answer.trim() || !currentPlayer || !imageLoaded || loading) return;
@@ -399,7 +409,8 @@ const handleSubmitGuess = async (e) => {
     setHasGuessed(true);
     setIsCorrect(true);
    
-    const timeBonus = Math.floor(timeLeft * 2);
+    console.log(gameMode);
+    const timeBonus = Math.floor(Math.pow(timeLeft / 30, 1.5) * getTimeBonusMultiplier(gameMode));
     const finalScore = Math.max(minScore, Math.floor(currentRoundScore + timeBonus));
     setCurrentRoundScore(finalScore);
    

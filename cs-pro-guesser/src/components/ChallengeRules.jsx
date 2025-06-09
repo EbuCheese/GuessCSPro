@@ -1,7 +1,34 @@
 import React, { useState } from 'react';
 
-const ChallengeRules = ({ gameMode = 'headshot' }) => {
+const ChallengeRules = ({ gameMode = 'headshot', gameConfig = {} }) => {
   const [isMinimized, setIsMinimized] = useState(true);
+
+  // Default game configurations
+  const defaultConfigs = {
+    headshot: {
+      rounds: 10,
+      timePerRound: 30,
+      startPoints: 100,
+      speedBonusMax: 100,
+      wrongPenalty: -15,
+      hintsAvailable: 3,
+      hintCost: -10,
+      timeDecay: -2
+    },
+    'free-for-all': {
+      rounds: 10,
+      timePerRound: 30,
+      startPoints: 100,
+      speedBonusMax: 150,
+      wrongPenalty: -15,
+      hintsAvailable: 3,
+      hintCost: -10,
+      timeDecay: -2
+    },
+  };
+
+  // Merge default config with passed config
+  const config = { ...defaultConfigs[gameMode], ...gameConfig };
 
   // Color themes matching your existing system
   const themes = {
@@ -18,23 +45,65 @@ const ChallengeRules = ({ gameMode = 'headshot' }) => {
       border: 'rgba(168, 85, 247, 0.4)',
       glow: 'rgba(168, 85, 247, 0.15)',
       bg: 'linear-gradient(135deg, rgba(168, 85, 247, 0.08) 0%, rgba(236, 72, 153, 0.06) 100%)'
-    }
+    },
   };
 
   const theme = themes[gameMode] || themes['free-for-all'];
 
+  // Dynamic game info based on config
   const gameInfo = [
-    { icon: '🔥', label: '10 Rounds', value: 'Total challenges', color: '#EF4444' },
-    { icon: '⏱️', label: '30 Seconds', value: 'Per round', color: '#F59E0B' }
+    { 
+      icon: '🔥', 
+      label: `${config.rounds} Rounds`, 
+      value: 'Total challenges', 
+      color: '#EF4444' 
+    },
+    { 
+      icon: '⏱️', 
+      label: `${config.timePerRound} Seconds`, 
+      value: 'Per round', 
+      color: '#F59E0B' 
+    }
   ];
 
+  // Dynamic scoring rules based on config
   const scoringRules = [
-    { icon: '💯', label: 'Start', value: '+100 pts', color: '#10B981' },
-    { icon: '⚡', label: 'Speed', value: '+2/sec', color: '#3B82F6' },
-    { icon: '❌', label: 'Wrong', value: '-15 pts', color: '#EF4444' },
-    { icon: '💡', label: 'Hints', value: '3 available', color: '#06B6D4' },
-    { icon: '💰', label: 'Hint Cost', value: '-10 pts', color: '#F59E0B' },
-    { icon: '⏳', label: 'Time Decay', value: '-2/sec', color: '#9333EA' }
+    { 
+      icon: '💯', 
+      label: 'Start', 
+      value: `+${config.startPoints} pts`, 
+      color: '#10B981' 
+    },
+    { 
+      icon: '⚡', 
+      label: 'Speed Bonus', 
+      value: `Up to +${config.speedBonusMax} pts`, 
+      color: '#3B82F6' 
+    },
+    { 
+      icon: '❌', 
+      label: 'Wrong', 
+      value: `${config.wrongPenalty} pts`, 
+      color: '#EF4444' 
+    },
+    { 
+      icon: '💡', 
+      label: 'Hints', 
+      value: `${config.hintsAvailable} available`, 
+      color: '#06B6D4' 
+    },
+    { 
+      icon: '💰', 
+      label: 'Hint Cost', 
+      value: `${config.hintCost} pts`, 
+      color: '#F59E0B' 
+    },
+    { 
+      icon: '⏳', 
+      label: 'Time Decay', 
+      value: `${config.timeDecay}/sec`, 
+      color: '#9333EA' 
+    }
   ];
 
   return (
@@ -196,7 +265,7 @@ const ChallengeRules = ({ gameMode = 'headshot' }) => {
               <div className="flex flex-wrap justify-center gap-2 sm:gap-4 text-xs text-slate-400 px-2">
                 <span className="flex items-center gap-1">
                   <span style={{ color: theme.primary }}>•</span>
-                  Fast answers = more points
+                  Faster = additional points
                 </span>
                 <span className="flex items-center gap-1">
                   <span style={{ color: theme.primary }}>•</span>
