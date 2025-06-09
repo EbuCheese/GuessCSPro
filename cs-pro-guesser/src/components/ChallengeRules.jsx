@@ -112,7 +112,7 @@ const ChallengeRules = ({ gameMode = 'headshot', gameConfig = {} }) => {
         className="relative rounded-xl backdrop-blur-xl border overflow-hidden transition-all duration-300"
         style={{
           background: gameMode === 'free-for-all' 
-            ? 'linear-gradient(135deg, rgba(145, 145, 145, 0.08) 0%, rgba(211, 211, 211, 0.06) 100%), rgba(22, 19, 34, 0.9)'
+            ? 'linear-gradient(135deg, rgba(145, 145, 145, 0.08) 0%, rgba(225, 225, 225, 0.06) 100%), rgba(22, 19, 34, 0.9)'
             : `${theme.bg}, rgba(15, 23, 42, 0.9)`,
           borderColor: gameMode === 'free-for-all'
             ? 'rgba(151, 41, 255, 0.4)'
