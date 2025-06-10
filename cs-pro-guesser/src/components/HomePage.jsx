@@ -1,15 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-// HomePage Component with CS2 styling
+// HomePage Component with CS2 styling and icon preloading
 export default function HomePage({ onSelectMode }) {
   const [hoveredMode, setHoveredMode] = useState(null);
+  const [iconsLoaded, setIconsLoaded] = useState(false);
   
   const gameModes = [
     { 
       id: 'headshot', 
       name: 'HEADSHOT', 
       description: 'Standard mode, guess the pro based off their HLTV headshot profile image.',
-      icon: '/headshot-icon.png', // Replace with your PNG path
+      icon: '/headshot-icon.png',
       color: '#FF6B35',
       iconStyles: { marginLeft: '20px' }
     },
@@ -17,7 +18,7 @@ export default function HomePage({ onSelectMode }) {
       id: 'free-for-all', 
       name: 'FREE FOR ALL', 
       description: 'Guess the pro based off a random image (from anywhere) of them!',
-      icon: '/flash-icon.png', // Replace with your PNG path
+      icon: '/flash-icon.png',
       color: '#c27aff',
       iconStyles: { marginRight: '10px' }
     },
@@ -25,7 +26,7 @@ export default function HomePage({ onSelectMode }) {
       id: 'quotes', 
       name: 'QUOTES', 
       description: 'Guess the pro from their quotes.',
-      icon: '/defuse-icon.png', // Replace with your PNG path
+      icon: '/defuse-icon.png',
       color: '#45B7D1',
       iconStyles: { marginRight: '15px' }
     },
@@ -33,30 +34,74 @@ export default function HomePage({ onSelectMode }) {
       id: 'hardcore', 
       name: 'HARDCORE', 
       description: 'Very minimal data provided, can you guess the pro?',
-      icon: '/c4-icon.png', // Replace with your PNG path
+      icon: '/c4-icon.png',
       color: '#f52a2a',
       iconStyles: { marginRight: '5px' }
     },
   ];
 
+  // All image assets to preload
+  const allImages = [
+    ...gameModes.map(mode => mode.icon),
+    '/crosshair-white.png',
+    '/crosshair-orange-hover.png',
+    '/crosshair-purple-hover.png',
+    '/crosshair-blue-hover.png',
+    '/crosshair-red-hover.png'
+  ];
+
+  // Preload images
+  useEffect(() => {
+    const preloadImages = async () => {
+      const imagePromises = allImages.map((src) => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = resolve;
+          img.onerror = () => {
+            console.warn(`Failed to load image: ${src}`);
+            resolve(); // Don't block loading if one image fails
+          };
+          img.src = src;
+        });
+      });
+
+      try {
+        await Promise.all(imagePromises);
+        setIconsLoaded(true);
+      } catch (error) {
+        console.error('Error preloading images:', error);
+        setIconsLoaded(true); // Still show the component
+      }
+    };
+
+    preloadImages();
+  }, []);
+
   // change the crosshair color based on hovered game
   const getCursorUrl = (modeId) => {
-  switch (modeId) {
-    case 'headshot':
-      return '/crosshair-orange-hover.png';
-    case 'free-for-all':
-      return '/crosshair-purple-hover.png';
-    case 'quotes':
-      return '/crosshair-blue-hover.png';
-    case 'hardcore':
-      return '/crosshair-red-hover.png';
-    default:
-      return '/crosshair-white.png'; // default crosshair
-  }
-};
+    switch (modeId) {
+      case 'headshot':
+        return '/crosshair-orange-hover.png';
+      case 'free-for-all':
+        return '/crosshair-purple-hover.png';
+      case 'quotes':
+        return '/crosshair-blue-hover.png';
+      case 'hardcore':
+        return '/crosshair-red-hover.png';
+      default:
+        return '/crosshair-white.png';
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      {/* Preload images in hidden div */}
+      <div style={{ display: 'none' }} aria-hidden="true">
+        {allImages.map((src, index) => (
+          <img key={index} src={src} alt="" />
+        ))}
+      </div>
+
       {/* CS2 Background */}
       <div 
         className="absolute inset-0 z-0"
@@ -82,8 +127,20 @@ export default function HomePage({ onSelectMode }) {
         }}
       />
 
+      {/* Loading overlay */}
+      {!iconsLoaded && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+            <p className="text-orange-500 font-bold" style={{ fontFamily: '"Rajdhani", sans-serif' }}>
+              LOADING ASSETS...
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Main Content */}
-      <div className="relative z-10 w-full max-w-4xl">
+      <div className={`relative z-10 w-full max-w-4xl transition-opacity duration-500 ${iconsLoaded ? 'opacity-100' : 'opacity-50'}`}>
         {/* Header Section */}
         <div className="text-center mb-12">
           {/* Main Logo */}
@@ -119,7 +176,7 @@ export default function HomePage({ onSelectMode }) {
           <div className="flex items-center justify-center mb-8">
             <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent w-64"></div>
               <div className="mx-4 text-orange-500 text-2xl">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="rgb(255, 107, 53)" viewBox="0 0 256 256"><path d="M160,128a32,32,0,1,1-32-32A32,32,0,0,1,160,128Z" opacity="0.2"></path><path d="M232,120h-8.34A96.14,96.14,0,0,0,136,32.34V24a8,8,0,0,0-16,0v8.34A96.14,96.14,0,0,0,32.34,120H24a8,8,0,0,0,0,16h8.34A96.14,96.14,0,0,0,120,223.66V232a8,8,0,0,0,16,0v-8.34A96.14,96.14,0,0,0,223.66,136H232a8,8,0,0,0,0-16Zm-96,87.6V200a8,8,0,0,0-16,0v7.6A80.15,80.15,0,0,1,48.4,136H56a8,8,0,0,0,0-16H48.4A80.15,80.15,0,0,1,120,48.4V56a8,8,0,0,0,16,0V48.4A80.15,80.15,0,0,1,207.6,120H200a8,8,0,0,0,0,16h7.6A80.15,80.15,0,0,1,136,207.6ZM128,88a40,40,0,1,0,40,40A40,40,0,0,0,128,88Zm0,64a24,24,0,1,1,24-24A24,24,0,0,1,128,152Z"></path></svg>           
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="rgb(255, 107, 53)" viewBox="0 0 256 256"><path d="M160,128a32,32,0,1,1-32-32A32,32,0,0,1,160,128Z" opacity="0.2"></path><path d="M232,120h-8.34A96.14,96.14,0,0,0,136,32.34V24a8,8,0,0,0-16,0v8.34A96.14,96.14,0,0,0,32.34,120H24a8,8,0,0,0,0,16h8.34A96.14,96.14,0,0,0,120,223.66V232a8,8,0,0,0,16,0v-8.34A96.14,96.14,0,0,0,223.66,136H232a8,8,0,0,0,0-16Zm-96,87.6V200a8,8,0,0,0-16,0v7.6A80.15,80.15,0,0,1,48.4,136H56a8,8,0,0,0,0-16H48.4A80.15,80.15,0,0,1,120,48.4V56a8,8,0,0,0,16,0V48.4A80.15,80.15,0,0,1,207.6,120H200a8,8,0,0,0,0-16h7.6A80.15,80.15,0,0,1,136,207.6ZM128,88a40,40,0,1,0,40,40A40,40,0,0,0,128,88Zm0,64a24,24,0,1,1,24-24A24,24,0,0,1,128,152Z"></path></svg>           
               </div>
             <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent w-64"></div>
           </div>
@@ -189,7 +246,7 @@ export default function HomePage({ onSelectMode }) {
                 )}
               </div>
 
-              {/* Mode Icon - Updated to use PNG */}
+              {/* Mode Icon with fallback */}
               <div className="mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
                 <img 
                   src={mode.icon} 
@@ -200,6 +257,11 @@ export default function HomePage({ onSelectMode }) {
                     filter: hoveredMode === mode.id 
                       ? `drop-shadow(0 0 10px ${mode.color}80)` 
                       : 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5))'
+                  }}
+                  onError={(e) => {
+                    console.warn(`Failed to load icon: ${mode.icon}`);
+                    // You could set a fallback icon here
+                    // e.target.src = '/fallback-icon.png';
                   }}
                 />
               </div>
@@ -268,7 +330,6 @@ export default function HomePage({ onSelectMode }) {
               @ebucheese
             </a>
           </div>
-
         </div>
       </div>
 

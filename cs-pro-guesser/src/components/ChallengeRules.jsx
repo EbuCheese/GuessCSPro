@@ -41,7 +41,7 @@ const ChallengeRules = ({ gameMode = 'headshot', gameConfig = {} }) => {
     },
     'free-for-all': {
       primary: '#A855F7',
-      secondary: '#EC4899',
+      secondary: '#FF7EBE',
       border: 'rgba(168, 85, 247, 0.4)',
       glow: 'rgba(168, 85, 247, 0.15)',
       bg: 'linear-gradient(135deg, rgba(168, 85, 247, 0.08) 0%, rgba(236, 72, 153, 0.06) 100%)'
