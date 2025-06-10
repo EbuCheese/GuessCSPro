@@ -135,28 +135,28 @@ useEffect(() => {
 }, []);
 
  // Generate hint based on hint level and player name
-  const generateHint = (playerName, hintLevel) => {
-    if (!playerName) return '';
-    
-    const name = playerName.trim();
-    
-    switch (hintLevel) {
-      case 1:
-        // Show number of letters as underscores
-        return name.replace(/[a-zA-Z]/g, '_').replace(/\s+/g, ' ');
-      case 2:
-        // Show first letter + underscores for the rest
-        return name.charAt(0) + name.slice(1).replace(/[a-zA-Z]/g, '_').replace(/\s+/g, ' ');
-      case 3:
-        // Show first letter + underscores + last letter
-        if (name.length <= 1) return name;
-        const lastChar = name.charAt(name.length - 1);
-        const middle = name.slice(1, -1).replace(/[a-zA-Z]/g, '_');
-        return name.charAt(0) + middle + lastChar;
-      default:
-        return '';
-    }
-  };
+const generateHint = (playerName, hintLevel) => {
+  if (!playerName) return '';
+ 
+  const name = playerName.trim();
+ 
+  switch (hintLevel) {
+    case 1:
+      // Show number of letters/numbers as underscores
+      return name.replace(/[a-zA-Z0-9]/g, '_').replace(/\s+/g, ' ');
+    case 2:
+      // Show first character + underscores for the rest
+      return name.charAt(0) + name.slice(1).replace(/[a-zA-Z0-9]/g, '_').replace(/\s+/g, ' ');
+    case 3:
+      // Show first character + underscores + last character
+      if (name.length <= 1) return name;
+      const lastChar = name.charAt(name.length - 1);
+      const middle = name.slice(1, -1).replace(/[a-zA-Z0-9]/g, '_');
+      return name.charAt(0) + middle + lastChar;
+    default:
+      return '';
+  }
+};
 
   // Handle hint button click
   const handleHintClick = () => {
