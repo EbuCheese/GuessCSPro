@@ -17,10 +17,6 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
   const [currentRoundScore, setCurrentRoundScore] = useState(100);
   const [wrongAttempts, setWrongAttempts] = useState(0);
 
-  // Hints
-  const [hintsUsed, setHintsUsed] = useState(0);
-  const [currentHint, setCurrentHint] = useState('');
-
   // Chosen Player
   const [currentPlayer, setCurrentPlayer] = useState(null);
   const [currentImageUrl, setCurrentImageUrl] = useState(null);
@@ -28,6 +24,10 @@ export default function ImageGames({ onBackToHome, initialGameMode  }) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Hints
+  const [hintsUsed, setHintsUsed] = useState(0);
+  const [currentHint, setCurrentHint] = useState('');
 
   // Multi-Rounds
   const [currentRound, setCurrentRound] = useState(1);
@@ -134,7 +134,16 @@ useEffect(() => {
   };
 }, []);
 
- // Generate hint based on hint level and player name
+// Helper function to get max hints based on name length
+const getMaxHints = (playerName) => {
+  if (!playerName) return 3;
+  const name = playerName.trim();
+  return name.length <= 2 ? 2 : 3;
+};
+
+const maxHints = getMaxHints(currentPlayer?.name);
+
+// Generate hint based on hint level and player name
 const generateHint = (playerName, hintLevel) => {
   if (!playerName) return '';
  
@@ -1284,7 +1293,7 @@ return (
                     onClick={handleHintClick}
                     className="px-4 sm:px-6 py-3 sm:py-4 font-bold text-sm sm:text-base rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none whitespace-nowrap"
                     style={{
-                      background: hasGuessed || !currentPlayer || !imageLoaded || loading || hintsUsed >= 3
+                      background: hasGuessed || !currentPlayer || !imageLoaded || loading || hintsUsed >= maxHints
                         ? 'rgba(75, 85, 99, 0.5)'
                         : gameMode === 'free-for-all'
                           ? 'linear-gradient(45deg, #8E44AD, #6366F1)'
@@ -1293,13 +1302,13 @@ return (
                       fontFamily: '"Rajdhani", sans-serif',
                       letterSpacing: '0.1em',
                       cursor: `url(${getCursorUrl(gameMode)}) 16 16, crosshair`,
-                      boxShadow: hasGuessed || !currentPlayer || !imageLoaded || loading || hintsUsed >= 3
+                      boxShadow: hasGuessed || !currentPlayer || !imageLoaded || loading || hintsUsed >= maxHints
                         ? 'none'
                         : gameMode === 'free-for-all'
                           ? '0 4px 15px rgba(142, 68, 173, 0.3)'
                           : '0 4px 15px rgba(255, 107, 53, 0.3)'
                     }}
-                    disabled={hasGuessed || !currentPlayer || !imageLoaded || loading || hintsUsed >= 3}
+                    disabled={hasGuessed || !currentPlayer || !imageLoaded || loading || hintsUsed >= maxHints}
                   >
                     <span className="block sm:inline">💡 HINT</span>
                     <span className="block sm:inline text-xs text-gray-300">(Space)</span>

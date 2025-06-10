@@ -89,7 +89,7 @@ const ChallengeRules = ({ gameMode = 'headshot', gameConfig = {} }) => {
     { 
       icon: '💡', 
       label: 'Hints', 
-      value: `${config.hintsAvailable} available`, 
+      value: `Up to ${config.hintsAvailable}`, 
       color: '#06B6D4' 
     },
     { 
